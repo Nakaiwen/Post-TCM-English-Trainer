@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>後中醫英文單字練習器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Serif+TC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6efe2;
+  --bg-soft:#efe5d2;
+  --paper:#fdfaf2;
+  --ink:#1a1d2a;
+  --ink-soft:#3d4252;
+  --ink-mute:#6b6e7c;
+  --ochre:#a86b2a;
+  --ochre-deep:#7d4d1a;
+  --sage:#3d5a40;
+  --sage-soft:#5b7a5e;
+  --brick:#9a3a35;
+  --line:#d8cdb6;
+  --line-soft:#e8dec9;
+  --shadow:0 1px 0 #e3d8bf, 0 8px 24px -12px rgba(60,40,10,.18);
+  --serif:'Newsreader','Noto Serif TC',serif;
+  --cn:'Noto Serif TC',serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--serif);
+  background:var(--bg);
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 15% 10%,rgba(168,107,42,.06),transparent 40%),
+    radial-gradient(circle at 85% 90%,rgba(61,90,64,.05),transparent 40%);
+  min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.app{max-width:780px;margin:0 auto;padding:24px 20px 60px}
+header.masthead{
+  border-bottom:1px solid var(--line);
+  padding:8px 0 22px;
+  margin-bottom:28px;
+  position:relative;
+}
+.eyebrow{
+  font-family:var(--cn);
+  font-size:11.5px;
+  letter-spacing:.32em;
+  color:var(--ochre);
+  text-transform:uppercase;
+  font-weight:500;
+  margin-bottom:6px;
+}
+h1.title{
+  font-family:var(--serif);
+  font-size:34px;
+  font-weight:500;
+  letter-spacing:-.01em;
+  line-height:1.1;
+}
+h1.title .cn{
+  font-family:var(--cn);
+  font-weight:500;
+  font-size:.78em;
+  margin-left:8px;
+  color:var(--ink-soft);
+}
+.sub{
+  font-family:var(--cn);
+  font-size:13.5px;
+  color:var(--ink-mute);
+  margin-top:8px;
+  letter-spacing:.04em;
+}
+
+/* --- Stat strip --- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  margin-bottom:28px;
+  font-family:var(--cn);
+}
+.stat{
+  background:var(--paper);
+  padding:12px 10px;
+  text-align:center;
+}
+.stat .n{
+  font-family:var(--serif);
+  font-size:24px;
+  font-weight:500;
+  color:var(--ink);
+  line-height:1;
+}
+.stat .l{
+  font-size:10.5px;
+  color:var(--ink-mute);
+  letter-spacing:.18em;
+  margin-top:6px;
+  text-transform:uppercase;
+}
+
+/* --- Mode cards --- */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px}
+.mode{
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:18px 16px 16px;
+  cursor:pointer;
+  transition:all .2s ease;
+  text-align:left;
+  font:inherit;
+  color:inherit;
+  display:block;
+  position:relative;
+  overflow:hidden;
+}
+.mode::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(168,107,42,.06));
+  opacity:0;
+  transition:opacity .2s;
+}
+.mode:hover{border-color:var(--ochre);transform:translateY(-1px);box-shadow:var(--shadow)}
+.mode:hover::before{opacity:1}
+.mode .num{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ochre);
+  letter-spacing:.1em;
+  display:block;
+  margin-bottom:8px;
+}
+.mode .t{
+  font-family:var(--cn);
+  font-size:17px;
+  font-weight:600;
+  color:var(--ink);
+  margin-bottom:4px;
+  line-height:1.3;
+}
+.mode .t-en{
+  font-style:italic;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin-bottom:10px;
+}
+.mode .d{
+  font-family:var(--cn);
+  font-size:12.5px;
+  color:var(--ink-mute);
+  line-height:1.5;
+}
+
+/* --- Section heading --- */
+.sec-h{
+  font-family:var(--cn);
+  font-size:11.5px;
+  letter-spacing:.3em;
+  color:var(--ochre);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+}
+.sec-h .right{
+  font-size:11px;
+  color:var(--ink-mute);
+  letter-spacing:.1em;
+  text-transform:none;
+}
+
+/* --- Practice screen --- */
+.practice{
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:24px 22px 20px;
+  margin-bottom:18px;
+  position:relative;
+}
+.p-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--line-soft);
+}
+.p-mode{
+  font-family:var(--cn);
+  font-size:12.5px;
+  color:var(--ochre);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+.p-prog{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--ink-mute);
+}
+.p-close{
+  background:none;border:none;
+  font-family:var(--serif);
+  font-size:18px;
+  color:var(--ink-mute);
+  cursor:pointer;
+  padding:4px 10px;
+}
+.p-close:hover{color:var(--ink)}
+
+.q-prompt{
+  font-family:var(--cn);
+  font-size:13px;
+  color:var(--ink-mute);
+  margin-bottom:14px;
+  letter-spacing:.05em;
+}
+.q-stem{
+  font-family:var(--serif);
+  font-size:20px;
+  line-height:1.6;
+  color:var(--ink);
+  margin-bottom:24px;
+}
+.q-stem.passage{font-size:18px;line-height:1.75}
+.q-stem .blank{
+  display:inline-block;
+  min-width:90px;
+  border-bottom:2px solid var(--ochre);
+  padding:0 6px;
+  margin:0 2px;
+  font-family:var(--mono);
+  font-size:.92em;
+  color:var(--ochre);
+  text-align:center;
+}
+.q-stem .blank.filled{
+  color:var(--sage);
+  border-bottom-color:var(--sage);
+}
+.q-stem .blank.wrong{
+  color:var(--brick);
+  border-bottom-color:var(--brick);
+}
+
+.q-target{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:500;
+  font-size:34px;
+  color:var(--ink);
+  text-align:center;
+  margin:8px 0 6px;
+  letter-spacing:-.01em;
+}
+.q-target-pos{
+  text-align:center;
+  font-family:var(--mono);
+  font-size:11.5px;
+  color:var(--ochre);
+  letter-spacing:.15em;
+  margin-bottom:22px;
+}
+.q-target-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:8px 0 6px;
+}
+.speak-btn{
+  background:none;
+  border:1px solid var(--line);
+  color:var(--ochre);
+  width:38px;height:38px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.speak-btn:hover{background:var(--bg-soft);border-color:var(--ochre)}
+.speak-btn:active{transform:scale(.95)}
+
+/* --- Options --- */
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.opt{
+  background:var(--bg-soft);
+  border:1px solid var(--line);
+  padding:13px 16px;
+  font-family:var(--serif);
+  font-size:17px;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+  transition:all .15s;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font:inherit;
+  width:100%;
+}
+.opt:hover:not(:disabled){border-color:var(--ochre);background:#f3e8d0}
+.opt:disabled{cursor:default}
+.opt .letter{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ochre);
+  letter-spacing:.1em;
+  width:18px;
+  flex-shrink:0;
+}
+.opt .word{flex:1;font-style:italic;font-weight:500}
+.opt .word.plain{font-style:normal;font-weight:400}
+.opt.correct{
+  background:#e6efdc;
+  border-color:var(--sage);
+  color:var(--sage);
+}
+.opt.correct .letter{color:var(--sage)}
+.opt.wrong{
+  background:#f3dcd8;
+  border-color:var(--brick);
+  color:var(--brick);
+}
+.opt.wrong .letter{color:var(--brick)}
+
+/* --- Listen mode UI --- */
+.listen-area{
+  text-align:center;
+  padding:18px 0 8px;
+}
+.listen-big{
+  width:78px;height:78px;
+  border-radius:50%;
+  border:1.5px solid var(--ochre);
+  background:var(--paper);
+  color:var(--ochre);
+  font-size:28px;
+  cursor:pointer;
+  margin-bottom:12px;
+  transition:all .15s;
+}
+.listen-big:hover{background:var(--bg-soft)}
+.listen-big:active{transform:scale(.95)}
+.listen-hint{
+  font-family:var(--cn);
+  font-size:12.5px;
+  color:var(--ink-mute);
+  margin-bottom:18px;
+  letter-spacing:.05em;
+}
+
+/* --- Feedback --- */
+.feedback{
+  margin-top:14px;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  background:var(--bg-soft);
+  font-family:var(--cn);
+  font-size:14px;
+  color:var(--ink-soft);
+  line-height:1.65;
+  display:none;
+}
+.feedback.show{display:block}
+.feedback .fb-tag{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.feedback.ok .fb-tag{color:var(--sage)}
+.feedback.ng .fb-tag{color:var(--brick)}
+.feedback .ans-word{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:600;
+  color:var(--ochre-deep);
+}
+.feedback .ans-zh{font-weight:500;color:var(--ink)}
+.feedback .ex{
+  margin-top:8px;
+  font-style:italic;
+  font-family:var(--serif);
+  color:var(--ink-soft);
+  font-size:14.5px;
+  line-height:1.5;
+}
+.feedback .ex u{
+  text-decoration:none;
+  background:linear-gradient(transparent 60%,rgba(168,107,42,.25) 0);
+  padding:0 2px;
+}
+.feedback .src-tag{
+  margin-top:10px;
+  font-family:var(--cn);
+  font-size:12.5px;
+  color:var(--ochre-deep);
+  letter-spacing:.05em;
+}
+.feedback .conf-note{
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px dashed var(--line);
+  font-size:13px;
+}
+
+/* --- Footer actions --- */
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+.btn{
+  flex:1;
+  padding:13px 18px;
+  font-family:var(--cn);
+  font-size:14.5px;
+  font-weight:500;
+  border:1px solid var(--ink);
+  background:var(--ink);
+  color:var(--paper);
+  cursor:pointer;
+  letter-spacing:.05em;
+  transition:all .15s;
+}
+.btn:hover{background:var(--ink-soft);border-color:var(--ink-soft)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--bg-soft);border-color:var(--ink-soft)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* --- Recent words / weak words --- */
+.weak-list{
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:18px 20px;
+  margin-bottom:18px;
+}
+.weak-row{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px dotted var(--line-soft);
+  font-size:15px;
+  align-items:center;
+  gap:12px;
+}
+.weak-row:last-child{border-bottom:none}
+.weak-row .ww{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:500;
+}
+.weak-row .wzh{font-family:var(--cn);font-size:13px;color:var(--ink-soft);flex:1;text-align:right}
+.weak-row .wstat{font-family:var(--mono);font-size:11px;color:var(--brick);min-width:40px;text-align:right}
+.weak-empty{font-family:var(--cn);font-size:13px;color:var(--ink-mute);text-align:center;padding:14px 0}
+
+/* --- Settings --- */
+.settings-bar{
+  display:flex;
+  gap:8px;
+  font-family:var(--cn);
+  font-size:12.5px;
+  color:var(--ink-mute);
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.settings-bar .s-link{
+  cursor:pointer;
+  border-bottom:1px dotted var(--ink-mute);
+  letter-spacing:.05em;
+}
+.settings-bar .s-link:hover{color:var(--ochre);border-color:var(--ochre)}
+
+.modal-bg{
+  position:fixed;inset:0;
+  background:rgba(26,29,42,.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:100;
+}
+.modal-bg.show{display:flex}
+.modal{
+  background:var(--paper);
+  border:1px solid var(--ink);
+  max-width:440px;
+  width:100%;
+  padding:26px 24px 22px;
+  max-height:85vh;
+  overflow-y:auto;
+}
+.modal h3{
+  font-family:var(--serif);
+  font-weight:500;
+  font-size:22px;
+  margin-bottom:18px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line);
+}
+.setting-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  font-family:var(--cn);
+  font-size:14px;
+  border-bottom:1px dotted var(--line-soft);
+  gap:12px;
+}
+.setting-row:last-of-type{border-bottom:none}
+.setting-row label{flex:1}
+.setting-row select,.setting-row input[type=number]{
+  font-family:var(--serif);
+  font-size:14px;
+  padding:6px 10px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+  min-width:90px;
+}
+.setting-row .danger{color:var(--brick);border-color:var(--brick);background:transparent;padding:6px 12px;cursor:pointer;font-family:var(--cn);font-size:13px}
+
+/* --- Done screen --- */
+.done{
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:30px 24px;
+  text-align:center;
+}
+.done .big-num{
+  font-family:var(--serif);
+  font-size:64px;
+  font-weight:300;
+  color:var(--ochre);
+  line-height:1;
+  margin-bottom:8px;
+}
+.done .big-num .slash{color:var(--ink-mute);font-size:.6em;font-weight:300}
+.done .ratio-l{
+  font-family:var(--cn);
+  font-size:13px;
+  color:var(--ink-mute);
+  letter-spacing:.2em;
+  margin-bottom:24px;
+}
+.done .msg{
+  font-family:var(--cn);
+  font-size:15px;
+  color:var(--ink-soft);
+  margin-bottom:24px;
+  line-height:1.7;
+}
+
+/* --- Mobile --- */
+@media (max-width:520px){
+  body{font-size:16px}
+  .app{padding:18px 14px 50px}
+  h1.title{font-size:26px}
+  h1.title .cn{display:block;margin-left:0;margin-top:4px;font-size:.65em}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .modes{grid-template-columns:1fr;gap:10px}
+  .practice{padding:18px 16px 16px}
+  .q-stem{font-size:18px}
+  .q-stem.passage{font-size:16.5px}
+  .q-target{font-size:28px}
+  .opt{font-size:15.5px;padding:12px 14px}
+  .actions{flex-direction:column;gap:8px}
+}
+
+/* --- Misc --- */
+.tag-confused{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.1em;
+  background:var(--ochre);
+  color:var(--paper);
+  padding:2px 8px;
+  margin-left:8px;
+  vertical-align:middle;
+  text-transform:uppercase;
+}
+.derived-list{
+  margin-top:6px;
+  font-size:13.5px;
+  color:var(--ink-mute);
+  font-family:var(--cn);
+}
+.derived-list em{font-family:var(--serif);font-style:italic;color:var(--ink-soft)}
+
+footer.foot{
+  margin-top:40px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+  font-family:var(--cn);
+  font-size:11.5px;
+  color:var(--ink-mute);
+  text-align:center;
+  letter-spacing:.1em;
+  line-height:1.7;
+}
+footer.foot em{font-style:normal;color:var(--ochre)}
+
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<!-- Settings Modal -->
+<div class="modal-bg" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <h3>設定 · Settings</h3>
+    <div class="setting-row">
+      <label>每日題數</label>
+      <input type="number" id="setDaily" min="5" max="100" step="5">
+    </div>
+    <div class="setting-row">
+      <label>發音語速</label>
+      <select id="setRate">
+        <option value="0.7">慢 (0.7×)</option>
+        <option value="0.85">適中 (0.85×)</option>
+        <option value="1.0">標準 (1.0×)</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <label>每題完成後自動讀音</label>
+      <select id="setAutoSpeak">
+        <option value="1">開啟</option>
+        <option value="0">關閉</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <label>清除所有學習進度</label>
+      <button class="danger" onclick="resetAll()">重置</button>
+    </div>
+    <div style="margin-top:18px;text-align:right">
+      <button class="btn" style="flex:none;padding:9px 22px" onclick="closeSettings()">關閉</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   後中醫英文單字練習器
+   Vocabulary data extracted from cram-school handout (頁262-312)
+   ============================================================ */
+
+/* Each entry: w=word, p=pos, z=Chinese, e=example sentence,
+   d=derived [{w,p,z}], s=synonym(s), a=antonym(s), c=confused-with-key */
+const VOCAB = [
+{w:"abdominals",p:"n.",z:"腹肌",e:"This exercise strengthens your abdominals.",d:[{w:"abdominal",p:"a.",z:"腹部的"},{w:"abdomen",p:"n.",z:"下腹，腹部"}]},
+{w:"abide",p:"v.",z:"居住；遵守",e:"Competitors must abide by the rules.",d:[{w:"abidance",p:"n.",z:"居住，遵守"},{w:"abiding",p:"a.",z:"永久的，不變的"}]},
+{w:"additive",p:"n.",z:"添加劑",e:"This snack is full of additives — just look at the label!"},
+{w:"adolescent",p:"n./a.",z:"青少年（的）",e:"Parents often fail to understand the emotional problems of their adolescent kids.",d:[{w:"adolescence",p:"n.",z:"青春期"}]},
+{w:"aftermath",p:"n.",z:"後果，餘波",e:"We all worked together in the aftermath of the earthquake.",s:"consequence"},
+{w:"ailment",p:"n.",z:"小病痛",e:"I can still work, minor ailments notwithstanding.",d:[{w:"ail",p:"v.",z:"感到不適，使痛苦"}]},
+{w:"ajar",p:"a.",z:"半開的",e:"We left the door ajar so that we could hear what they were saying."},
+{w:"akin",p:"a.",z:"同類的，近似的",e:"Such behavior is akin to treachery.",d:[{w:"kin",p:"n.",z:"親人"}]},
+{w:"allow",p:"v.",z:"允許",e:"Smoking is now allowed in this restaurant.",d:[{w:"allowance",p:"n.",z:"允許，津貼"},{w:"disallow",p:"v.",z:"不允許"}]},
+{w:"altitude",p:"n.",z:"高度，海拔",e:"Thin air in high altitudes may cause Acute Mountain Sickness."},
+{w:"amass",p:"v.",z:"積聚，累積",e:"She has amassed a huge fortune from her novels.",s:"accumulate",d:[{w:"mass",p:"n.",z:"質量，堆，團"},{w:"amassment",p:"n.",z:"積聚，堆積"}]},
+{w:"amble",p:"v./n.",z:"漫步，散步",e:"Tourists ambled down the avenue, looking for souvenirs to buy.",s:"stroll"},
+{w:"anguish",p:"n./v.",z:"痛苦，苦惱",e:"The injuries were painful but the mental anguish worse.",d:[{w:"anxious",p:"a.",z:"焦慮的"},{w:"anguished",p:"a.",z:"痛苦的"}]},
+{w:"antiseptic",p:"a./n.",z:"殺菌的；殺菌劑",e:"Antiseptic is used to sterilize the skin before an injection."},
+{w:"arbitrary",p:"a.",z:"任意的，武斷的",e:"Why did they cut your job and not mine? It seems to have been purely arbitrary.",s:"random",d:[{w:"arbitrate",p:"v.",z:"仲裁"},{w:"arbitrator",p:"n.",z:"仲裁人"}]},
+{w:"ardent",p:"a.",z:"熱切的，熱烈的",e:"The man is an ardent admirer of the superstar.",s:"passionate",a:"apathetic",d:[{w:"ardor",p:"n.",z:"熱情，熱忱"}]},
+{w:"arouse",p:"v.",z:"激起，挑起",e:"The speaker aroused the rally into a frenzy.",d:[{w:"arousal",p:"n.",z:"刺激"}]},
+{w:"arthritis",p:"n.",z:"關節炎",e:"Old people are often afflicted with arthritis."},
+{w:"asteroid",p:"n.",z:"小行星",e:"There is an asteroid belt between Mars and Jupiter."},
+{w:"astute",p:"a.",z:"敏銳的，精明的",e:"The famous writer is an astute observer of human behavior.",s:"shrewd",d:[{w:"astuteness",p:"n.",z:"敏銳，精明"}]},
+{w:"atrocious",p:"a.",z:"殘暴的，極惡劣的",e:"The atrocious treatment of prisoners is simply shocking.",d:[{w:"atrocity",p:"n.",z:"殘暴"}]},
+{w:"austere",p:"a.",z:"嚴厲的，簡樸的",e:"The austere courtroom was a large, dark chamber.",a:"luxurious",d:[{w:"austerity",p:"n.",z:"嚴厲，簡樸"}]},
+{w:"authentic",p:"a.",z:"正宗的，真實的",e:"This restaurant serves authentic Italian food.",s:"genuine",a:"counterfeit",d:[{w:"authenticity",p:"n.",z:"真實性，可靠性"}]},
+{w:"autocratic",p:"a.",z:"獨裁的，專制的",e:"The constitutional reforms threatened his autocratic power.",d:[{w:"autocrat",p:"n.",z:"獨裁者"},{w:"autocracy",p:"n.",z:"獨裁政治"}]},
+{w:"autopsy",p:"n.",z:"驗屍，屍體解剖",e:"The autopsy found no evidence of poisoning."},
+{w:"avant-garde",p:"a./n.",z:"前衛（人士）",e:"The artist's avant-garde approach shocked some viewers."},
+{w:"backfire",p:"v.",z:"收到反效果",e:"Her plan to make him jealous backfired on her when he simply left."},
+{w:"ban",p:"v./n.",z:"禁止；禁令",e:"The book was banned as soon as it was published."},
+{w:"banish",p:"v.",z:"放逐，流放",e:"The writer was banished to Siberia for a decade.",s:"exile",d:[{w:"banishment",p:"n.",z:"放逐，流放"}]},
+{w:"barrage",p:"n.",z:"砲火猛攻；密集的攻擊",e:"The newspaper has received a barrage of complaints about an obviously untrue story."},
+{w:"bedrock",p:"n.",z:"床岩，根基",e:"The family is the bedrock of society.",s:"foundation"},
+{w:"beguile",p:"v.",z:"誘騙，使⋯著迷",e:"The salesperson beguiled him into buying a car he didn't need.",d:[{w:"guile",p:"n.",z:"奸詐，欺騙"},{w:"disguise",p:"n./v.",z:"偽裝"}]},
+{w:"behold",p:"v.",z:"看，注視",e:"The cathedral is quite a sight to behold."},
+{w:"beleaguered",p:"a.",z:"遭圍困的，困擾重重的",e:"The pandemic eased off, giving the beleaguered doctors some breathing space.",d:[{w:"beleaguer",p:"v.",z:"圍困，圍攻"}]},
+{w:"bias",p:"n./v.",z:"偏見；偏差",e:"Reporters must be impartial and not show political bias.",d:[{w:"unbiased",p:"a.",z:"沒有偏見的，公正的"}]},
+{w:"binge",p:"v./n.",z:"狂飲；暴食；放縱",e:"Having won the lottery, the woman went on a shopping binge."},
+{w:"bizarre",p:"a.",z:"怪異的，荒誕的",e:"Models on the runway wore bizarre outfits.",s:"strange"},
+{w:"blast",p:"n./v.",z:"爆炸；猛烈抨擊",e:"The blast was caused by a gas leak."},
+{w:"blatant",p:"a.",z:"公然的，囂張的",e:"What he said was a blatant lie.",a:"subtle"},
+{w:"bleak",p:"a.",z:"陰暗的，嚴峻的",e:"During the pandemic, the future looked bleak.",a:"cheerful",d:[{w:"bleakness",p:"n.",z:"陰暗，嚴峻"}]},
+{w:"blunt",p:"a.",z:"鈍的；直言不諱的",e:"I'll be blunt — what you did was totally wrong.",d:[{w:"bluntly",p:"adv.",z:"直言不諱地"}]},
+{w:"bolster",p:"v.",z:"支撐，支持",e:"Lower interest rates are needed to bolster the economy.",s:"support"},
+{w:"bondage",p:"n.",z:"枷鎖，奴役",e:"The slaves were kept in bondage until their death."},
+{w:"botany",p:"n.",z:"植物學",e:"Charles Darwin was interested more in zoology than in botany.",d:[{w:"botanist",p:"n.",z:"植物學家"}]},
+{w:"bounce",p:"v.",z:"彈，跳",e:"Stock prices quickly bounced back after the scare."},
+{w:"boycott",p:"v./n.",z:"杯葛，抵制",e:"People were urged to boycott the country's products."},
+{w:"breach",p:"n./v.",z:"破壞，違反",e:"The company was sued for breach of contract.",s:"violate"},
+{w:"breeding",p:"n.",z:"生育，教養",e:"These beaches are breeding grounds for green turtles.",d:[{w:"breed",p:"v./n.",z:"生產，繁殖；品種"}]},
+{w:"bristle",p:"n./v.",z:"鬃毛；發怒",e:"She bristled at the suggestion that she had abused her child."},
+{w:"broker",p:"v./n.",z:"為⋯牽線；掮客，經紀人",e:"The diplomat brokered a ceasefire between the warring parties."},
+{w:"brusque",p:"a.",z:"無禮的，不假辭色",e:"The secretary was a little brusque with me, simply telling me to wait outside."},
+{w:"bully",p:"n./v.",z:"霸凌（者）",e:"That boy is a big bully in school."},
+{w:"burgeon",p:"v.",z:"萌芽，茁壯",e:"It was love at first sight, which burgeoned between them.",d:[{w:"burgeoning",p:"a.",z:"快速成長的"}]},
+{w:"bust",p:"n./v.",z:"經濟蕭條；爆破，逮捕",e:"Centuries of economic boom and bust show that you cannot avoid financial crises."},
+{w:"buzzword",p:"n.",z:"行話，時髦用語",e:"\"Down to earth\" is the latest buzzword in politics."},
+{w:"byword",p:"n.",z:"代號",e:"Their products are a byword for good value."},
+{w:"cadaver",p:"n.",z:"屍體",e:"The students practice dissection on a cadaver."},
+{w:"callous",p:"a.",z:"長繭的；麻木的，冷酷的",e:"Those high officials show a callous indifference to the sufferings of the people.",c:"callus",d:[{w:"callus",p:"n.",z:"繭"},{w:"callousness",p:"n.",z:"麻木不仁，冷酷"}]},
+{w:"camouflage",p:"n./v.",z:"迷彩，偽裝，遮掩",e:"The makeup successfully camouflages all blemishes.",s:"disguise"},
+{w:"caregiver",p:"n.",z:"照料者",e:"The daughter-in-law is the traditional caregiver in an extended family."},
+{w:"cargo",p:"n.",z:"貨物",e:"This is a cargo ship, not for passengers."},
+{w:"caustic",p:"a.",z:"腐蝕性的；尖酸刻薄的",e:"The columnist made some caustic remarks about the new Minister."},
+{w:"cement",p:"v./n.",z:"鞏固；水泥",e:"The summit is meant to cement relations between these nations."},
+{w:"chasm",p:"n.",z:"深淵，鴻溝",e:"The chasm between rich and poor is widest in capitalist societies."},
+{w:"charitable",p:"a.",z:"慈善的",e:"The organization is funded by charitable donations.",d:[{w:"charity",p:"n.",z:"慈善，慈善機構"}]},
+{w:"chauffeur",p:"n./v.",z:"私家司機；開車接送",e:"His mother spoils him terribly and chauffeurs him around everywhere."},
+{w:"chemotherapy",p:"n.",z:"化療",e:"Chemotherapy and radiotherapy are often used together to treat cancer."},
+{w:"colony",p:"n.",z:"殖民地，集群，菌落",e:"There are several bacterial colonies on this petri dish.",d:[{w:"colonize",p:"v.",z:"殖民，開墾"}]},
+{w:"colossal",p:"a.",z:"巨大的，驚人的",e:"They were asking a colossal amount of money for the house.",s:"enormous"},
+{w:"commercialize",p:"v.",z:"商品化，商業化",e:"How can this technology be commercialized?",d:[{w:"commerce",p:"n.",z:"商業"}]},
+{w:"commonplace",p:"a.",z:"普通的，平常的",e:"Electric vehicles are quite commonplace nowadays."},
+{w:"companionship",p:"n.",z:"陪伴",e:"Pets offer much-needed companionship to the elderly.",d:[{w:"companion",p:"n.",z:"同伴"}]},
+{w:"concoct",p:"v.",z:"調製，捏造",e:"He concocted a story about working late at the office.",s:"fabricate"},
+{w:"constipation",p:"n.",z:"便秘",e:"If you lack fiber in your diet, you may suffer from constipation.",d:[{w:"constipated",p:"a.",z:"便秘的"}]},
+{w:"contemplate",p:"v.",z:"思量，仔細考慮",e:"I am contemplating going abroad for a year or so.",s:"consider",d:[{w:"contemplation",p:"n.",z:"凝視，考慮"}]},
+{w:"covert",p:"a.",z:"祕密的",e:"Covert operations of the CIA include assassination of foreign leaders.",a:"overt"},
+{w:"crutch",p:"n.",z:"撐枴",e:"He has been on crutches since that accident."},
+{w:"cryptic",p:"a.",z:"神秘的，費解的",e:"The treasure hunter found a cryptic message in the unearthed box."},
+{w:"culminate",p:"v.",z:"達到高點，達到高潮",e:"The series of demonstrations culminated in a full-blown revolt.",d:[{w:"culmination",p:"n.",z:"高點，高潮"}]},
+{w:"culpable",p:"a.",z:"有罪的，該責備的",e:"He was held culpable for all that had happened.",d:[{w:"culpability",p:"n.",z:"有罪，應受譴責"}]},
+{w:"culprit",p:"n.",z:"罪犯，禍首，元凶",e:"The culprit of the hit-and-run didn't go very far before he was stopped by a patrol car."},
+{w:"cumbersome",p:"a.",z:"笨重的，累贅的",e:"That huge suitcase is too cumbersome for touring around."},
+{w:"cunning",p:"n./a.",z:"狡猾，精明",e:"The manager came up with a cunning plan."},
+{w:"curb",p:"v.",z:"控制，遏止",e:"The government should take aggressive measures to curb tax evasion.",c:"curtail"},
+{w:"curtail",p:"v.",z:"削減，縮減",e:"NATO plans to curtail the number of troops in the conflict zone.",s:"reduce",c:"curb",d:[{w:"curtailment",p:"n.",z:"削減，縮減"}]},
+{w:"dairy",p:"a.",z:"酪農的，乳品的",e:"Dairy products are highly nutritious."},
+{w:"dazzle",p:"v.",z:"使目眩，使讚歎",e:"She was dazzled by the man's charm and good looks.",c:"daze",d:[{w:"daze",p:"v./n.",z:"使目炫；恍惚"}]},
+{w:"dearth",p:"n.",z:"稀少，缺乏",e:"The nation is suffering from a dearth of vaccines.",s:"scarcity"},
+{w:"debacle",p:"n.",z:"災難，慘敗",e:"The collapse of the company is the greatest financial debacle of the decade."},
+{w:"debut",p:"v./n.",z:"首次露面，首度登台",e:"The dancer made her debut in Swan Lake."},
+{w:"decorative",p:"a.",z:"裝飾性的",e:"The decorative arch in the garden looks nice.",d:[{w:"decoration",p:"n.",z:"裝飾"}]},
+{w:"decry",p:"v.",z:"責難，大聲抨擊",e:"The UN decried the nation's imprisonment of several journalists.",s:"condemn"},
+{w:"delirious",p:"a.",z:"精神錯亂的；極度興奮的",e:"The patient was delirious with fever.",src:"中國醫106"},
+{w:"delve",p:"v.",z:"挖掘，深挖",e:"Investigators delved into the disaster to find its roots."},
+{w:"density",p:"n.",z:"密度",e:"Population density is low in Siberia.",d:[{w:"dense",p:"a.",z:"濃密的"}]},
+{w:"deplore",p:"v.",z:"哀嘆，對⋯深感遺憾",e:"The editorial deplores the widespread indifference to climate change."},
+{w:"diehard",p:"n./a.",z:"死硬派；頑固的",e:"The man is a diehard conservative."},
+{w:"dietary",p:"a.",z:"飲食的",e:"The nutritionist gave me some dietary advice for weight control."},
+{w:"discount",p:"v./n.",z:"漠視，忽視；打折",e:"You shouldn't discount the possibility that he was telling the truth."},
+{w:"dither",p:"v.",z:"躊躇，猶豫",e:"She's still dithering whether to accept the job offer."},
+{w:"dormant",p:"a.",z:"睡著的，休眠的",e:"Having entered the body, the virus may lie dormant for long periods.",a:"active",d:[{w:"dormancy",p:"n.",z:"休眠"}]},
+{w:"dredge",p:"v.",z:"疏浚，打撈",e:"They have to dredge the canal regularly to keep it open."},
+{w:"draft",p:"n./v.",z:"草稿；徵兵",e:"His brother was drafted into the army at 18."},
+{w:"drench",p:"v.",z:"使⋯濕透，浸透",e:"A sudden thunderstorm drenched us to the skin."},
+{w:"drought",p:"n.",z:"乾旱",e:"This year's harvest will be severely impacted by the drought."},
+{w:"drowsy",p:"a.",z:"睡意朦朧的",e:"The room is so warm it's making me feel drowsy."},
+{w:"drizzle",p:"n./v.",z:"毛毛雨；下毛毛雨；滴",e:"The chef drizzled syrup over the warm cake."},
+{w:"droop",p:"v./n.",z:"下垂，衰退",e:"The flowers were drooping in the heat."},
+{w:"dubious",p:"a.",z:"可疑的，懷疑的",e:"These dubious claims require verification.",s:"doubtful"},
+{w:"dull",p:"a.",z:"遲鈍的，枯燥的",e:"The article she wrote was rather dull."},
+{w:"ebb",p:"v./n.",z:"衰退，退潮",e:"He could feel his strength ebbing away."},
+{w:"edible",p:"a.",z:"可食用的",e:"Are you sure this fruit is edible?"},
+{w:"egoistic",p:"a.",z:"利己的，自私的",e:"You mustn't be too egoistic when it comes to environmental issues.",d:[{w:"ego",p:"n.",z:"自我"}]},
+{w:"embark",p:"v.",z:"上船（或飛機等）；開始",e:"The troops are waiting to embark.",a:"disembark",d:[{w:"disembark",p:"v.",z:"下船（或飛機等）"}]},
+{w:"embarrass",p:"v.",z:"使尷尬，使窘迫",e:"Don't embarrass me in front of all these people!",d:[{w:"embarrassment",p:"n.",z:"尷尬，窘迫"}]},
+{w:"embed",p:"v.",z:"嵌入，埋置",e:"Microprocessors are embedded in products such as cars and refrigerators."},
+{w:"embryo",p:"n.",z:"胚胎",e:"Between the eighth week of development and birth a human embryo is called a foetus.",d:[{w:"embryonic",p:"a.",z:"胚胎的，初期的"}]},
+{w:"empirical",p:"a.",z:"經驗上的，經驗主義的",e:"This theory lacks empirical evidence to back it up.",d:[{w:"empiricism",p:"n.",z:"經驗主義"}]},
+{w:"empower",p:"v.",z:"授權，使能夠",e:"We empower our sales staff to make decisions without always having to consult their supervisor."},
+{w:"emulate",p:"v.",z:"仿效",e:"The start-up hopes to emulate the success of other software companies.",s:"imitate"},
+{w:"encrypt",p:"v.",z:"編碼，加密",e:"Blockchain technology is employed in encrypting protected data."},
+{w:"engulf",p:"v.",z:"吞沒",e:"Flames rapidly engulfed the whole building."},
+{w:"ensure",p:"v.",z:"確保",e:"You must buckle your seatbelt to ensure safety.",s:"guarantee"},
+{w:"entrenched",p:"a.",z:"根深蒂固的",e:"Misogyny is so entrenched in that nation that there is no hope for real change."},
+{w:"envy",p:"n./v.",z:"羨慕",e:"Taiwan's National Health Insurance is the envy of many nations.",d:[{w:"envious",p:"a.",z:"羨慕的"}]},
+{w:"enzyme",p:"n.",z:"酶，酵素",e:"An enzyme in the saliva of the mouth starts the process of breaking down the food."},
+{w:"etiquette",p:"n.",z:"禮節，規矩",e:"Social etiquette dictates that men should stand up when a lady enters."},
+{w:"entwine",p:"v.",z:"纏繞，交織",e:"The fates of the two protagonists are inseparably entwined."},
+{w:"fabricate",p:"v.",z:"編造，捏造",e:"He was late to school, so he fabricated an excuse for himself."},
+{w:"facade",p:"n.",z:"（建築物）正面；（事物）表面",e:"He kept his real emotions hidden behind a friendly facade."},
+{w:"fad",p:"n.",z:"一時的流行，時髦",e:"There was a fad for wearing ripped jeans a few years ago.",c:"fade"},
+{w:"fade",p:"v.",z:"褪色，消減",e:"The event occurred so long ago that the memory has mostly faded away.",c:"fad"},
+{w:"faint",p:"v./n./a.",z:"昏倒；模糊不清",e:"I heard a faint voice seemingly calling for help."},
+{w:"falter",p:"v.",z:"蹣跚，動搖，衰退",e:"The speaker's voice faltered and then stopped."},
+{w:"fallacy",p:"n.",z:"錯誤，謬誤",e:"There is a fallacy in the basic premise of the argument.",d:[{w:"fallacious",p:"a.",z:"錯誤的"}]},
+{w:"famine",p:"n.",z:"饑荒",e:"The drought led to widespread famine.",d:[{w:"famished",p:"a.",z:"饑餓的"}]},
+{w:"fanatical",p:"a.",z:"狂熱的，盲信的",e:"His dedication to fitness is almost fanatical.",d:[{w:"fanatic",p:"n.",z:"狂熱者"}]},
+{w:"fatigue",p:"n./v.",z:"（使）疲乏",e:"The fatigue was caused by overwork.",d:[{w:"fatigued",p:"a.",z:"疲乏的"}]},
+{w:"feeble",p:"a.",z:"虛弱的",e:"The patient uttered a feeble cry of pain."},
+{w:"feign",p:"v.",z:"假裝，偽裝",e:"He feigned interest, trying to ingratiate himself with the manager.",s:"pretend"},
+{w:"fiasco",p:"n.",z:"慘敗，大敗",e:"The show was a fiasco — many in the audience left before it was finished."},
+{w:"flabby",p:"a.",z:"（肌肉等）不結實的；軟弱的",e:"This exercise helps to flatten a flabby stomach."},
+{w:"flair",p:"n.",z:"天生的才能，鑑別力",e:"He has a flair for rousing listeners with words.",s:"talent"},
+{w:"flatulence",p:"n.",z:"脹氣；浮誇",e:"Eating soybeans may cause flatulence."},
+{w:"flaunt",p:"v.",z:"誇耀，炫耀",e:"She likes to flaunt her wealth by wearing furs and jewelry.",c:"flout"},
+{w:"fledgling",p:"n./a.",z:"學飛的小鳥；羽翼未豐的",e:"The fledgling company may not weather the financial storm."},
+{w:"flock",p:"n./v.",z:"群；群聚",e:"Birds of a feather flock together."},
+{w:"flout",p:"v.",z:"藐視，嘲笑，故意不遵守",e:"The show flouted traditions of respect for authority.",c:"flaunt"},
+{w:"focal",p:"a.",z:"焦點的，核心的",e:"The focal figure of the movie is a teenager with supernatural powers."},
+{w:"forbearance",p:"n.",z:"忍耐，克制",e:"Reconciliation requires understanding and forbearance on both sides."},
+{w:"foreground",p:"n.",z:"前景，顯著位置",e:"We want this issue to be in the foreground.",a:"background"},
+{w:"foremost",p:"a.",z:"首屈一指的，最重要的",e:"This is one of the country's foremost art galleries."},
+{w:"forensic",p:"a.",z:"科學辦案的，科學檢驗的",e:"Forensic evidence revealed a large quantity of poison in the dead man's stomach."},
+{w:"foresight",p:"n.",z:"遠見，先見之明",e:"She had had the foresight to sell her house just before the market crashed.",a:"hindsight",d:[{w:"hindsight",p:"n.",z:"事後的理解"}]},
+{w:"formidable",p:"a.",z:"強大的，可怕的",e:"The defending champion will be a formidable opponent."},
+{w:"fortuitous",p:"a.",z:"偶然的，幸運的",e:"The collapse of its rival was a fortuitous opportunity for the company."},
+{w:"frantic",p:"a.",z:"狂亂的，憤怒的",e:"At the sound of the fire alarm, there occurred a frantic struggle to the exit."},
+{w:"frenzy",p:"n.",z:"瘋狂，狂亂",e:"There was a frenzy of activity in the financial markets yesterday.",d:[{w:"frenetic",p:"a.",z:"發狂的，狂亂的"}]},
+{w:"fraud",p:"n.",z:"詐騙",e:"Cases of fraud abound in Southeast Asia.",d:[{w:"fraudulent",p:"a.",z:"詐騙的，假的"}]},
+{w:"gallant",p:"a./n.",z:"華麗的，有紳士風度的",e:"It was quite gallant of him to fight a duel in defense of her honor."},
+{w:"gel",p:"n.",z:"凝膠",e:"I don't see any hair gel in the bathroom."},
+{w:"glimpse",p:"n./v.",z:"一瞥，看見",e:"I only had a glimpse of the interior before the door was shut."},
+{w:"gloat",p:"v.",z:"得意洋洋",e:"She's still gloating over her recent promotion."},
+{w:"gnash",p:"v.",z:"咬（牙）",e:"He gnashed his teeth in anger and frustration."},
+{w:"grind",p:"v.",z:"磨，碾",e:"Some people grind their teeth during sleep."},
+{w:"grip",p:"n./v.",z:"緊握，控制",e:"He shakes hands with a firm grip."},
+{w:"groom",p:"v.",z:"打扮，梳理，準備",e:"She was being groomed for leadership."},
+{w:"grudge",p:"n.",z:"怨恨，懷恨",e:"She still bears a grudge against me for saying no to her."},
+{w:"grumpy",p:"a.",z:"壞脾氣的，愛發牢騷的",e:"That grumpy old man is always complaining about one thing or another."},
+{w:"gullible",p:"a.",z:"易受騙的",e:"There are various miracle cures on the market for people gullible enough to buy them.",a:"skeptical"},
+{w:"habitual",p:"a.",z:"習慣性的",e:"He's taking his habitual afternoon walk."},
+{w:"hallmark",p:"n.",z:"標誌，特徵",e:"This explosion has all the hallmarks of a terrorist attack."},
+{w:"hallucination",p:"n.",z:"幻覺",e:"High fevers can cause hallucinations.",d:[{w:"hallucinate",p:"v.",z:"產生幻覺"}]},
+{w:"hamper",p:"v.",z:"妨礙",e:"Heavy rains have hampered rescue operations.",s:"hinder",src:"中國醫107"},
+{w:"handle",p:"v./n.",z:"處理；把手",e:"The manager said that he would handle the matter himself."},
+{w:"hanker",p:"v.",z:"嚮往，渴望",e:"What did you hanker after most when you were in prison?"},
+{w:"haphazard",p:"a.",z:"隨意的，無計畫的",e:"I made a haphazard guess, but was lucky enough to hit upon the answer.",src:"中國醫106"},
+{w:"hasten",p:"v.",z:"加快，催促",e:"We must hasten operations to meet the deadline."},
+{w:"haven",p:"n.",z:"避風港，避難所",e:"The organization provides safe haven for refugees."},
+{w:"headstrong",p:"a.",z:"固執的，任性的",e:"She was a headstrong child, always getting into trouble."},
+{w:"hearten",p:"v.",z:"激勵，鼓舞",e:"The team's victory has heartened its fans.",a:"dishearten",d:[{w:"dishearten",p:"v.",z:"使沮喪"}]},
+{w:"heed",p:"v./n.",z:"注意，留意",e:"If they had heeded the warning signs, the accident might not have happened."},
+{w:"herald",p:"n./v.",z:"先驅；宣布，預示",e:"The first robin is a herald of spring."},
+{w:"herbal",p:"a.",z:"草本植物的",e:"Chinese herbal medicine may help where Western medicine has failed."},
+{w:"heyday",p:"n.",z:"全盛期",e:"In the heyday of the fax machine, you can't operate a business without one."},
+{w:"hoax",p:"n./v.",z:"騙局；欺騙",e:"The whole thing is a big hoax; don't believe any of it."},
+{w:"homage",p:"n.",z:"尊敬，敬意",e:"We've gathered here to pay homage to his great achievements."},
+{w:"holistic",p:"a.",z:"整體的，全面的",e:"Holistic medicine aims to enhance the functions of the whole person."},
+{w:"hook",p:"v./n.",z:"使⋯上鉤；鉤子",e:"I was hooked after I played the video game for the first time."},
+{w:"horizon",p:"n.",z:"地平線，視野",e:"After college, he spent a year traveling around the world to broaden his horizons.",d:[{w:"horizontal",p:"a.",z:"水平的"}]},
+{w:"hostile",p:"a.",z:"仇視的，不友善的",e:"Hostile forces are advancing on the capital.",a:"friendly",d:[{w:"hostility",p:"n.",z:"敵意"}]},
+{w:"hotbed",p:"n.",z:"溫床",e:"The slum is a hotbed for crime and disease."},
+{w:"hybrid",p:"n./a.",z:"雜種（的），混合（的）",e:"Hybrid cars are gradually giving way to electric vehicles."},
+{w:"hypnosis",p:"n.",z:"催眠",e:"Hypnosis has been used to perform painless surgeries."},
+{w:"hypodermic",p:"a.",z:"皮下的",e:"The medicine is administered via hypodermic injection."},
+{w:"hygiene",p:"n.",z:"衛生",e:"Maintaining personal hygiene helps guard against viruses."},
+{w:"iconic",p:"a.",z:"偶像級的",e:"U2 is an iconic rock band."},
+{w:"ignite",p:"v.",z:"點燃，著火，引發",e:"The tax hike ignited a wave of violent protests.",a:"extinguish"},
+{w:"imbue",p:"v.",z:"使充滿",e:"Her poetry is imbued with a love of the outdoors."},
+{w:"impair",p:"v.",z:"損壞，傷害",e:"Your hearing may be impaired if you listen to loud music for too long.",d:[{w:"impairment",p:"n.",z:"損壞，傷害"}]},
+{w:"impeachment",p:"n.",z:"彈劾",e:"The President survived both impeachment attempts.",d:[{w:"impeach",p:"v.",z:"彈劾"}]},
+{w:"imperative",p:"n./a.",z:"命令；必要的，必須服從的",e:"It is imperative that everyone follow instructions to the letter.",c:"imperious"},
+{w:"imperious",p:"a.",z:"專橫的，傲慢的",e:"The CEO's imperious manners turned many against him.",c:"imperative"},
+{w:"impinge",p:"v.",z:"侵犯，影響",e:"The new agency impinges on the Constitutional right to free speech."},
+{w:"implant",p:"v./n.",z:"埋置，植入；植入物",e:"A microchip is implanted in the dog's body."},
+{w:"impoverished",p:"a.",z:"窮困的，貧窮的",e:"The impoverished young actor signed up for a major role in the new film.",a:"affluent"},
+{w:"incinerate",p:"v.",z:"焚化，焚毀",e:"The spacecraft broke up on reentry and was incinerated."},
+{w:"incubate",p:"v.",z:"孵育，培養",e:"The hen is incubating five eggs now."},
+{w:"infatuated",p:"a.",z:"著迷的",e:"Don't you know that she is infatuated with you and will do almost anything for you?"},
+{w:"infiltrate",p:"v.",z:"滲透",e:"The company has been infiltrated by industrial spies."},
+{w:"inoculate",p:"v.",z:"預防接種",e:"All these children have been inoculated against polio."},
+{w:"insinuate",p:"v.",z:"暗示，暗指，含沙射影",e:"Is she insinuating that I'm getting fat by saying that the chair might collapse?"},
+{w:"interior",p:"n./a.",z:"內部（的）",e:"He studied interior design in college."},
+{w:"intestine",p:"n.",z:"腸",e:"Microorganisms dwell in the intestines, sharing our food while aiding in digestion."},
+{w:"intimidation",p:"n.",z:"恐嚇，威脅",e:"The sole witness succumbed to intimidation and refused to testify.",d:[{w:"intimidate",p:"v.",z:"恐嚇，威脅"}]},
+{w:"intramuscular",p:"a.",z:"肌肉內的",e:"Intramuscular injections are more painful than hypodermic ones."},
+{w:"intricate",p:"a.",z:"精密的，複雜的",e:"Following the intricate plotline can be a challenge."},
+{w:"intrigue",p:"n./v.",z:"陰謀詭計；耍陰謀；使⋯著迷",e:"The President was ousted through political intrigue of his opponents."},
+{w:"intruder",p:"n.",z:"侵入者",e:"There was an intruder in our house last night."},
+{w:"inundate",p:"v.",z:"淹沒，氾濫",e:"The company has been inundated by complaints from its customers.",s:"flood"},
+{w:"invest",p:"v.",z:"投資",e:"To become an Island of Technology, Taiwan must invest more in research and development."},
+{w:"investigate",p:"v.",z:"調查，研究",e:"The police inspector is investigating the case."},
+{w:"invigorate",p:"v.",z:"使⋯精神煥發，激勵",e:"The cold shower had invigorated me."},
+{w:"iris",p:"n.",z:"虹膜",e:"\"Eye color\" actually refers to the color of the iris."},
+{w:"irksome",p:"a.",z:"令人厭煩的",e:"Some foreigners find it irksome to have to remove the shoes before entering a Japanese house.",src:"中國醫111"},
+{w:"irritate",p:"v.",z:"激怒，刺激",e:"After a while the persistent noise began to irritate me.",d:[{w:"irritable",p:"a.",z:"易怒的"}]},
+{w:"isolate",p:"v.",z:"孤立，隔絕",e:"Scientists have successfully isolated the active ingredients of the herb."},
+{w:"jargon",p:"n.",z:"行話",e:"Only hackers understand such computer jargon."},
+{w:"jeopardize",p:"v.",z:"危害到，使⋯陷入危機",e:"Failing the exam could jeopardize his plans for the future.",a:"ensure"},
+{w:"jerk",p:"v./n.",z:"猛拉，抽動",e:"The car made a strange noise and jerked to a halt."},
+{w:"jingle",p:"n./v.",z:"叮噹聲，曲調；叮噹作響",e:"I can't get the jingles of the commercial out of my mind."},
+{w:"knowledgeable",p:"a.",z:"知識淵博的",e:"The professor is very knowledgeable about Medieval art."},
+{w:"lace",p:"n./v.",z:"蕾絲，帶子；加入少量（酒或藥物）",e:"The coffee is laced with brandy."},
+{w:"lapse",p:"n./v.",z:"失誤；（時間）流逝；陷入",e:"What you did resulted obviously from a lapse of judgement."},
+{w:"launch",p:"v./n.",z:"發動，發射",e:"The candidate launched his campaign a whole year before election day."},
+{w:"lethal",p:"a.",z:"致命的",e:"This is a less lethal variant of the virus."},
+{w:"likelihood",p:"n.",z:"可能性",e:"There is little likelihood that the incumbent will be reelected."},
+{w:"linger",p:"v.",z:"徘徊，逗留",e:"Symptoms may linger long after the disease is cured."},
+{w:"litigation",p:"n.",z:"訴訟",e:"To avoid the expense of prolonged litigation, they agreed to settle out of court."},
+{w:"lump",p:"n./a.",z:"團，塊；整個的",e:"She found a lump in her breast."},
+{w:"lure",p:"v./n.",z:"引誘；誘餌，誘惑",e:"The travel agency lured tourists with low prices."},
+{w:"luxury",p:"n.",z:"奢侈，豪華",e:"The retired billionaire is living a life of ease and luxury."},
+{w:"marginal",p:"a.",z:"邊緣的，微小的",e:"The impact of the new policy on revenues proved to be only marginal."},
+{w:"marvel",p:"v./n.",z:"嘖嘖稱奇；奇蹟",e:"Audiences marveled at the spectacular special effects on the big screen."},
+{w:"massacre",p:"n./v.",z:"屠殺",e:"The uneven battle turned into a massacre."},
+{w:"master",p:"v./n.",z:"精通，學會；大師，主人",e:"She lived in Italy for several years but never quite mastered the language."},
+{w:"matrix",p:"n.",z:"母體，基礎",e:"Nations collaborate within the matrix of the UN."},
+{w:"mechanical",p:"a.",z:"機械的，刻板的",e:"The plane crash was caused by mechanical problems."},
+{w:"mercurial",p:"a.",z:"善變的，反覆無常的",e:"The vivacious girl has a mercurial temperament.",src:"中國醫107"},
+{w:"mess",p:"n.",z:"混亂，一團糟",e:"The fight in the porcelain shop left it in a mess."},
+{w:"metabolism",p:"n.",z:"代謝",e:"During hibernation, metabolism is reduced to the minimum.",d:[{w:"metabolic",p:"a.",z:"代謝的"}]},
+{w:"milestone",p:"n.",z:"里程碑",e:"The discovery of antibiotics is an important milestone in medical history."},
+{w:"mineral",p:"n./a.",z:"礦物；礦物的",e:"This country is poor in mineral resources."},
+{w:"mirth",p:"n.",z:"高興，歡樂",e:"His impersonations of our teacher were a source of considerable mirth."},
+{w:"miscellaneous",p:"a.",z:"混雜的",e:"The tycoon has a miscellaneous collection of contemporary art."},
+{w:"miserly",p:"a.",z:"小氣的，吝嗇的",e:"She has the misfortune of being married to a miserly man."},
+{w:"mogul",p:"n.",z:"大亨",e:"Rupert Murdoch is a media mogul."},
+{w:"muddle",p:"v./n.",z:"攪混；混亂",e:"The company's accounts were in a complete muddle."},
+{w:"myriad",p:"n./a.",z:"無數，大量（的）",e:"For dining out, city dwellers face a myriad of choices."},
+{w:"nebulous",p:"a.",z:"朦朧的，含糊的",e:"The young graduate has a few nebulous ideas about what to do in the future, but nothing definite.",s:"vague"},
+{w:"nestle",p:"v.",z:"依偎，安頓",e:"The village nestled at the foot of a hill."},
+{w:"nicety",p:"n.",z:"細微的區別，小細節",e:"The delegates spent a lot of time arguing over legal niceties."},
+{w:"notorious",p:"a.",z:"惡名昭彰的",e:"His boss is a notorious miser."},
+{w:"nuance",p:"n.",z:"細微的差別",e:"Foreigners are often puzzled by the nuances of Mandarin tones."},
+{w:"nudge",p:"v./n.",z:"輕推（以引起注意）",e:"She gave him a nudge to wake him from his daydream."},
+{w:"nurture",p:"v./n.",z:"培育，養育",e:"My father nurtured my love of art.",c:"nature"},
+{w:"nutshell",p:"n.",z:"堅果的外殼；小東西",e:"The commentator put the current situation in a nutshell."},
+{w:"obesity",p:"n.",z:"肥胖（症）",e:"Obesity may lead to type-2 diabetes.",d:[{w:"obese",p:"a.",z:"肥胖的"}]},
+{w:"offset",p:"v./n.",z:"補償，抵銷",e:"The travel expense to work is offset by the cheap housing in the area."},
+{w:"ominous",p:"a.",z:"不祥的",e:"The engine has been making an ominous sound for half an hour now."},
+{w:"onerous",p:"a.",z:"繁重的",e:"Finding a peaceful solution is an onerous task.",s:"burdensome",src:"中國醫107"},
+{w:"ongoing",p:"a.",z:"持續進行中的",e:"No agreement has been reached and the negotiations are still ongoing."},
+{w:"onslaught",p:"n.",z:"進擊，猛攻",e:"The besieged city cannot withstand the onslaught of the enemy for long."},
+{w:"orientation",p:"n.",z:"定位，導向，適應",e:"The university has an orientation program for entering students."},
+{w:"origin",p:"n.",z:"起源，來源",e:"Have you found the origin of the rumor?"},
+{w:"outcry",p:"n.",z:"喊叫，大聲抗議",e:"The new tax provoked a public outcry."},
+{w:"outrageous",p:"a.",z:"可憎的，極過份的",e:"The invader's demands were simply outrageous."},
+{w:"outbreak",p:"n.",z:"爆發",e:"Few nations were fully prepared at the outbreak of the pandemic.",src:"中國醫111"},
+{w:"outsource",p:"v.",z:"（將工作）外包",e:"The university is planning to outsource all nonacademic services."},
+{w:"outstanding",p:"a.",z:"傑出的，未清償的",e:"The pianist gave an outstanding performance last night."},
+{w:"outweigh",p:"v.",z:"重量超過⋯；重要性超過⋯",e:"The benefits of this treatment far outweigh any risks."},
+{w:"overhaul",p:"v./n.",z:"翻修，大修",e:"I took my car in for an overhaul."},
+{w:"oversight",p:"n.",z:"失察，監督",e:"Some legislators argue that the industry requires stricter government oversight."},
+{w:"overwhelm",p:"v.",z:"壓倒，淹沒",e:"Amazon warehouse workers often feel overwhelmed by work."},
+{w:"pacifist",p:"n.",z:"和平主義者",e:"He is a pacifist and goes to every antiwar demonstration he knows of.",src:"中國醫108"},
+{w:"painstaking",p:"a.",z:"不辭辛勞的，仔細的",e:"Checking for typos is a painstaking process."},
+{w:"palliative",p:"a./n.",z:"緩解的；緩解的藥物或措施",e:"The terminal patient is now receiving palliative medication only.",c:"palpation"},
+{w:"palpation",p:"n.",z:"觸診",e:"Traditional Chinese Medicine relies heavily on pulse palpation in diagnosis.",c:"palliative"},
+{w:"patrol",p:"n./v.",z:"巡邏",e:"The police patrol this area regularly."},
+{w:"paucity",p:"n.",z:"稀少，缺乏",e:"There is a paucity of information on the new discovery.",s:"scarcity"},
+{w:"pharmaceutical",p:"a./n.",z:"製藥的，藥品的；藥物",e:"Pfizer is an American pharmaceutical giant."},
+{w:"pharmacology",p:"n.",z:"藥理學",e:"Knowledge of pharmacology is an issue of particular relevance for prescribers."},
+{w:"philanthropic",p:"a.",z:"博愛的，慈善的",e:"The ball is a philanthropic event, designed to solicit donations."},
+{w:"physical",p:"a.",z:"身體的，物質的",e:"Physical exercise is essential to health."},
+{w:"pinnacle",p:"n.",z:"頂峰",e:"That year the athlete was at the pinnacle of his career."},
+{w:"pious",p:"a.",z:"虔誠的",e:"The pious old couple go to church every Sunday."},
+{w:"pique",p:"v./n.",z:"刺激，激怒；怒氣",e:"Mergers and acquisitions piqued his interest in business school."},
+{w:"pivotal",p:"a.",z:"樞紐的，關鍵的",e:"The man was a pivotal figure in the revolution.",s:"crucial",src:"中國醫109"},
+{w:"plague",p:"v./n.",z:"折磨，困擾；瘟疫",e:"The company has been plagued by financial problems since the very beginning."},
+{w:"plasticity",p:"n.",z:"可塑性",e:"Children's brains have greater plasticity than adults'."},
+{w:"pledge",p:"v./n.",z:"承諾，宣誓",e:"The candidate made pledges not to raise taxes if elected."},
+{w:"plummet",p:"v./n.",z:"直線下墜，暴跌",e:"Major stock indexes plummeted when the news of war broke out."},
+{w:"plunder",p:"v./n.",z:"掠奪，搶劫",e:"The village was routinely plundered by pirates."},
+{w:"plunge",p:"n./v.",z:"跳入，急降",e:"The company's stocks plunged 2% on the bad news."},
+{w:"poisonous",p:"a.",z:"有毒的",e:"This kind of mushroom is highly poisonous."},
+{w:"populism",p:"n.",z:"民粹主義",e:"Their ideas are simple populism — tax cuts and higher wages."},
+{w:"porous",p:"a.",z:"多孔的，能滲水的",e:"The porous rock can hold a lot of water."},
+{w:"pottery",p:"n.",z:"陶器，陶藝",e:"You can buy pottery and porcelain at that shop."},
+{w:"practitioner",p:"n.",z:"業者，實行者",e:"He is a practitioner of traditional Chinese medicine."},
+{w:"preordain",p:"v.",z:"預定，命中注定",e:"His life seems to have followed a preordained path."},
+{w:"pressing",p:"a.",z:"緊急的，迫切的",e:"The most pressing issue now is to procure financing."},
+{w:"prey",p:"n./v.",z:"獵物；獵捕",e:"Lions prey on zebras.",d:[{w:"predator",p:"n.",z:"狩獵者"}]},
+{w:"privacy",p:"n.",z:"隱私",e:"Social platforms are often accused of invading privacy."},
+{w:"promiscuous",p:"a.",z:"男女關係雜亂的，不檢點的",e:"Despite what you may think, I have never been promiscuous."},
+{w:"psychiatric",p:"a.",z:"精神治療的",e:"The psychologically disturbed patient requires psychiatric help."},
+{w:"publicity",p:"n.",z:"注意，宣傳",e:"The scandal generated much publicity for the upcoming movie."},
+{w:"pupil",p:"n.",z:"瞳孔",e:"Cats' pupils dilate in the dark."},
+{w:"purchase",p:"n./v.",z:"購買",e:"The farmer purchased the adjacent land for expansion."},
+{w:"quell",p:"v.",z:"鎮壓，平息",e:"The farmers' revolt was quickly quelled.",s:"suppress"},
+{w:"quote",p:"v./n.",z:"引用，引述，報價",e:"The pious old man likes to quote from the Bible."},
+{w:"radiotherapy",p:"n.",z:"放射治療",e:"Radiotherapy, also called radiation therapy, employs high doses of radiation to kill cancer cells."},
+{w:"rail",p:"v.",z:"責罵，抱怨",e:"The columnist rails against the injustices of the system."},
+{w:"raise",p:"v.",z:"舉起，提出，養育",e:"The man is raising a lot of chickens in his farm."},
+{w:"rally",p:"v./n.",z:"重整，重新振作；大集會",e:"The stock market rallied after a huge loss last week."},
+{w:"rampant",p:"a.",z:"狂暴的，猖獗的",e:"The people are fed up with rampant corruption."},
+{w:"random",p:"a.",z:"隨機的，任意的",e:"The lottery is based on random numbers."},
+{w:"rarely",p:"adv.",z:"極少",e:"Such coincidences rarely happen."},
+{w:"rate",p:"n./v.",z:"比率；評比",e:"The approval rate of the President is under 40% at the moment."},
+{w:"rational",p:"a.",z:"理性的",e:"What would be the rational course of action now?",a:"irrational",d:[{w:"irrational",p:"a.",z:"不理性的"}]},
+{w:"reckon",p:"v.",z:"計算，認為",e:"The inflation rate is now reckoned to be 10%."},
+{w:"recount",p:"v.",z:"敘述",e:"He recounted his adventures since he left home."},
+{w:"reel",p:"v.",z:"暈眩，搖搖欲墜",e:"The boxer is reeling after the punch."},
+{w:"refute",p:"v.",z:"駁斥，反駁",e:"The defense refuted the prosecutor's statements."},
+{w:"remarkable",p:"a.",z:"值得注意的，了不起的",e:"It's a remarkable achievement to have competed in five Olympic Games in a row."},
+{w:"reparation",p:"n.",z:"補償，賠償",e:"The court required the accused to make financial reparation to his victim."},
+{w:"resurgence",p:"n.",z:"復活，再起",e:"Lately there has been a resurgence of interest in the music of the 90s."},
+{w:"reticent",p:"a.",z:"無言的，沉默的",e:"The new Mayor is very reticent about his past.",c:"reluctant"},
+{w:"revere",p:"v.",z:"尊敬，崇敬",e:"Dr. Schweitzer is revered for his selfless dedication to Africa.",s:"venerate"},
+{w:"rift",p:"n.",z:"裂縫，分裂，不和",e:"The fight caused a deep rift between the two friends, which never healed."},
+{w:"rigorous",p:"a.",z:"嚴厲的",e:"New recruits must go through rigorous training at the camp.",s:"strict",src:"中國醫106"},
+{w:"rollout",p:"n.",z:"推出",e:"The rollout of the new vaccine was quite successful."},
+{w:"rubble",p:"n.",z:"碎石，瓦礫堆",e:"Many houses in the war zone were reduced to rubble."},
+{w:"rumble",p:"n./v.",z:"（發出）隆隆聲",e:"In the city there is no escape from the continuous rumble of traffic."},
+{w:"rumor",p:"n.",z:"謠言",e:"Rumor has it that the candidate has an illegitimate child."},
+{w:"sabotage",p:"n./v.",z:"蓄意破壞",e:"He claimed that a foreign government sabotaged the pipeline."},
+{w:"sagacious",p:"a.",z:"睿智的",e:"The old man gave him sagacious advice."},
+{w:"salvage",p:"n./v.",z:"搶救，挽救，打撈",e:"The announcement was a desperate attempt to salvage the situation."},
+{w:"sanguine",p:"a.",z:"樂觀的，自信的",e:"They remained sanguine about the prospect of peace.",s:"optimistic"},
+{w:"savage",p:"a./n.",z:"野蠻的；野蠻人",e:"The savage invasion is universally condemned."},
+{w:"savvy",p:"a./n.",z:"精明的；理解能力",e:"Our manager is a savvy businessman."},
+{w:"scorch",p:"v.",z:"烤焦，灼傷",e:"The surrounding buildings were scorched by the heat of the explosion."},
+{w:"score",p:"n./v.",z:"分數；得（分），評（分）",e:"Our star player scored at the last minute of the game."},
+{w:"scramble",p:"v./n.",z:"爭搶，混亂",e:"The spectators scrambled for the best vantage points."},
+{w:"scrimp",p:"v.",z:"節省，精打細算",e:"The impecunious student had to scrimp on food and clothing.",src:"中國醫110"},
+{w:"scroll",p:"n./v.",z:"卷軸，名冊；展開，瀏覽",e:"I spend a lot of time scrolling through new posts on Facebook."},
+{w:"scrounge",p:"v.",z:"搜尋，四處尋找",e:"The stray cat is scrounging around piles of litter for food."},
+{w:"scruple",p:"n.",z:"猶豫，顧忌",e:"I have no scruples about eavesdropping."},
+{w:"scrutinize",p:"v.",z:"審視，細看",e:"He scrutinized the men's faces slowly, trying to work out who was lying.",src:"義守114"},
+{w:"self-fulfilling",p:"a.",z:"自我實現的",e:"Changes in stock prices are often self-fulfilling: when many investors expect a stock to rise and therefore buy in, it rises."},
+{w:"serenity",p:"n.",z:"寧靜，安詳",e:"I love the peace and serenity of the countryside."},
+{w:"servitude",p:"n.",z:"奴役身分",e:"Indentured laborers were kept in servitude for a specified period of time."},
+{w:"shambles",p:"n.",z:"屠宰場，混亂",e:"After the party, the house was a total shambles."},
+{w:"shelter",p:"n./v.",z:"遮蔽，掩護",e:"The tree provided some shelter against the rain."},
+{w:"shield",p:"n./v.",z:"盾牌，屏障；保護",e:"They are safely shielded against projectiles."},
+{w:"shortage",p:"n.",z:"短缺",e:"There has been a serious shortage of eggs recently."},
+{w:"shrewd",p:"a.",z:"精明的",e:"Going into marketing is a shrewd career move.",s:"astute"},
+{w:"skeptic",p:"n.",z:"懷疑者",e:"You can believe in ghosts if you like, but I'm still a skeptic."},
+{w:"slanted",p:"a.",z:"傾斜的，有偏見的",e:"Slanted media coverage is increasing public support for the war."},
+{w:"slaughter",p:"v./n.",z:"屠宰，屠殺",e:"Innocent civilians are being slaughtered in that country."},
+{w:"slay",p:"v.",z:"殺害，殺死",e:"They believe he was slain for organizing workers."},
+{w:"slight",p:"a.",z:"輕微的",e:"He speaks English with a slight Taiwanese accent."},
+{w:"sluggish",p:"a.",z:"緩慢，遲緩",e:"The sedative made the patient sluggish."},
+{w:"soothe",p:"v.",z:"使平息，撫慰",e:"A shot of brandy may soothe your nerves."},
+{w:"smash",p:"v.",z:"打破，粉碎",e:"Results of the game smashed a lot of records."},
+{w:"soar",p:"v.",z:"高漲，高飛",e:"Prices soar during an inflation."},
+{w:"somatic",p:"a.",z:"身體的",e:"Psychological problems may show somatic symptoms such as headaches or stomach aches.",src:"中國醫114"},
+{w:"spare",p:"v./a./n.",z:"赦免；省下；備用的",e:"I have a spare room; you are welcome to it."},
+{w:"sparing",p:"a.",z:"節約的，不濫用的",e:"Be sparing with the butter as there isn't much left."},
+{w:"spark",p:"v./n.",z:"點燃，火星",e:"The tax hike sparked revolt."},
+{w:"spawn",p:"v./n.",z:"產卵；造成；魚卵，後代",e:"The policy of reform and opening up has spawned thousands of small businesses."},
+{w:"species",p:"n.",z:"品種（單複數同形）",e:"This butterfly is of an endangered species."},
+{w:"specifically",p:"adv.",z:"明確地",e:"He said he was going to Taipei, but didn't mention specifically where."},
+{w:"spike",p:"v./n.",z:"猛漲；大漲，大釘子",e:"Prices spiked when news came that tariffs will be raised.",src:"中國醫114"},
+{w:"spiraling",p:"a.",z:"盤旋上升的，不斷擴大的",e:"Spiraling costs have squeezed profits."},
+{w:"sponge",p:"n.",z:"海綿",e:"The housewife used a sponge to clean kitchenware."},
+{w:"sprinkle",p:"v./n.",z:"灑，撒；少量",e:"You should sprinkle some salt in the soup."},
+{w:"sprint",p:"n./v.",z:"短跑，衝刺",e:"He won first place in the 100-meter sprint."},
+{w:"spurn",p:"v.",z:"摒棄，拒絕",e:"She spurned my offers of help."},
+{w:"squander",p:"v.",z:"揮霍，浪費",e:"Youth is too precious to be squandered away."},
+{w:"stack",p:"v./n.",z:"堆放；一堆",e:"There are several newspapers stacked on his desk."},
+{w:"staggering",p:"a.",z:"驚人的，巨大的",e:"The annual defense budget is a staggering amount of money."},
+{w:"stamina",p:"n.",z:"體力",e:"Running a marathon requires great stamina."},
+{w:"stethoscope",p:"n.",z:"聽診器",e:"The stethoscope is a basic instrument in internal medicine."},
+{w:"stifle",p:"v.",z:"窒息，壓抑",e:"The autocrat censors the media to stifle protest."},
+{w:"strand",p:"v.",z:"擱淺",e:"A stray whale is stranded on the beach near here."},
+{w:"strenuous",p:"a.",z:"費力的",e:"The government is making strenuous efforts to maintain peace."},
+{w:"strident",p:"a.",z:"刺耳的，大聲的",e:"The article is a strident criticism of government policies."},
+{w:"strive",p:"v.",z:"努力",e:"The new immigrant strives to merge into the unfamiliar environment.",src:"義守112"},
+{w:"stroke",p:"n.",z:"中風",e:"He suffered a stroke that left him unable to speak."},
+{w:"studious",p:"a.",z:"勤奮的，刻意的",e:"The billionaire kept a studious absence from public view."},
+{w:"stunt",p:"n.",z:"特技表演，噱頭",e:"The action movie is packed with spectacular stunts."},
+{w:"stymie",p:"v.",z:"妨礙，阻礙",e:"Foreign investment is stymied by the country's poor infrastructure."},
+{w:"submerge",p:"v.",z:"浸入，淹沒",e:"Some 90% of the bulk of an iceberg is submerged in the sea.",a:"emerge"},
+{w:"succumb",p:"v.",z:"屈服",e:"The witness succumbed to pressure and refused to testify in court."},
+{w:"summarize",p:"v.",z:"摘要，總結",e:"The speaker summarized the lecture in the end."},
+{w:"supplant",p:"v.",z:"代替，取代",e:"Printed books may eventually be supplanted by e-books.",s:"replace"},
+{w:"surgery",p:"n.",z:"外科手術，開刀",e:"The injury requires immediate surgery."},
+{w:"swap",p:"v./n.",z:"交換",e:"The two businessmen swapped business cards."},
+{w:"swarm",p:"n./v.",z:"群；聚集",e:"A swarm of bees attacked him furiously."},
+{w:"systematic",p:"a.",z:"有系統的，有條理的",e:"We've got to be more systematic in the way that we approach this task."},
+{w:"tabloid",p:"n.",z:"小報，八卦媒體",e:"The tabloids like to do sensational reporting."},
+{w:"tack",p:"n.",z:"航向，方針，路線",e:"Realizing the policy won't work, the government changed tack."},
+{w:"tackle",p:"v.",z:"對付，處理",e:"There are many ways of tackling this problem."},
+{w:"tease",p:"v./n.",z:"逗，取笑",e:"Grownups like to tease the shy little boy."},
+{w:"tedious",p:"a.",z:"乏味的，煩人的",e:"I hate accounting because it is such a tedious job."},
+{w:"teeter",p:"v.",z:"搖晃，搖搖欲墜",e:"The company is teetering on the brink of bankruptcy."},
+{w:"terrace",p:"n.",z:"陽台",e:"He likes to drink coffee on the terrace."},
+{w:"thaw",p:"n./v.",z:"（冰、雪等）融化，解凍；緩和",e:"Allow the meat to thaw completely before cooking it."},
+{w:"theme",p:"n.",z:"主題",e:"I fail to grasp the theme of the story."},
+{w:"therapeutic",p:"a.",z:"治療的，有療效的",e:"I find gardening very therapeutic."},
+{w:"threat",p:"n.",z:"威脅",e:"Drunk drivers are a real threat to law-abiding citizens."},
+{w:"thwart",p:"v.",z:"阻撓",e:"His ambitions were thwarted for a long time before his breakthrough play.",s:"hamper"},
+{w:"toddler",p:"n.",z:"學步的小孩",e:"These toys are meant for toddlers."},
+{w:"toll",p:"n.",z:"通行費，代價，傷亡人數",e:"The war took its toll on both nations."},
+{w:"toss",p:"n./v.",z:"投擲",e:"Let's toss a coin to decide this."},
+{w:"traitor",p:"n.",z:"叛徒",e:"The spy is a traitor to his own country."},
+{w:"trample",p:"v.",z:"踐踏",e:"Civic rights are trampled upon in that autocratic country."},
+{w:"travail",p:"n.",z:"艱苦處境，折磨",e:"The book deals with the travails and tribulations of starting a business.",c:"travel"},
+{w:"treat",p:"v./n.",z:"請客，招待；好東西",e:"Let me treat you to dinner tonight."},
+{w:"treatment",p:"n.",z:"處理，對待，治療",e:"The patient hasn't responded well to the treatment."},
+{w:"traumatic",p:"a.",z:"造成心理創傷的",e:"Being robbed at gunpoint can be a traumatic experience."},
+{w:"treacherous",p:"a.",z:"背叛的，不可靠的",e:"That treacherous agent will betray you at the first chance he gets."},
+{w:"tremor",p:"n.",z:"顫抖",e:"The disease mostly affects people over 50, causing uncontrollable tremors."},
+{w:"triage",p:"n./v.",z:"（依緊急性）分類，分流",e:"Patients are triaged so that those in most need get blood first."},
+{w:"trim",p:"v.",z:"修剪",e:"Your hair needs trimming."},
+{w:"tumor",p:"n.",z:"腫瘤",e:"To his great relief, the tumor tested benign."},
+{w:"tycoon",p:"n.",z:"大亨",e:"Terry Gou is an industrial tycoon."},
+{w:"ultimate",p:"a.",z:"最後的，終極的",e:"The ultimate cost of the project may greatly exceed the original estimation."},
+{w:"underlying",p:"a.",z:"潛在的，根本的",e:"We need to tackle the underlying causes of poverty."},
+{w:"undermine",p:"v.",z:"暗中破壞，削弱",e:"She is attempting to undermine my authority in the company."},
+{w:"underscore",p:"v.",z:"強調，凸顯",e:"The number of security agents underscores the importance of the occasion.",s:"emphasize"},
+{w:"undertake",p:"v.",z:"著手，從事",e:"Students are required to undertake simple experiments."},
+{w:"undocumented",p:"a.",z:"沒有證件的",e:"The new President vows to round up and expel all undocumented immigrants."},
+{w:"unwind",p:"v.",z:"解開，放輕鬆",e:"This is an informal party where you can totally unwind."},
+{w:"upbraid",p:"v.",z:"責罵",e:"He was upbraided by his teacher for failing to do his homework."},
+{w:"upbringing",p:"n.",z:"教養",e:"Son of two professors, he had excellent upbringing."},
+{w:"upheaval",p:"n.",z:"動亂，巨變，隆起",e:"These are times of political upheaval."},
+{w:"uphold",p:"v.",z:"支撐，維護",e:"The job of a police officer is to uphold the law."},
+{w:"upstart",p:"n./a.",z:"暴發戶；新公司；傲慢自大的",e:"The upstart company is catching up very quickly."},
+{w:"uptake",p:"n.",z:"吸收（率），接受（率）",e:"There is a 90% uptake of vaccination in this country."},
+{w:"vantage",p:"n.",z:"優勢，優越的位置",e:"From my vantage point I have a clear view of the whole garden."},
+{w:"vascular",p:"a.",z:"血管的",e:"Vascular dementia is caused by reduced blood flow to the brain.",d:[{w:"cardiovascular",p:"a.",z:"心血管的"}]},
+{w:"vector",p:"n.",z:"病菌媒介，帶菌者",e:"Mosquitoes are the vectors of dengue fever."},
+{w:"venerate",p:"v.",z:"尊敬，崇敬",e:"Chinese people venerate their ancestors.",s:"revere"},
+{w:"veteran",p:"n./a.",z:"老兵，老手；老資格的",e:"Veteran steel workers are leading the labor union."},
+{w:"vibrant",p:"a.",z:"活力旺盛的，鮮明的",e:"This area is the vibrant commercial center of the city.",a:"dull"},
+{w:"vigilant",p:"a.",z:"警戒的，提高警覺的",e:"The burglar was spotted by vigilant neighbors."},
+{w:"vie",p:"v.",z:"競爭，角逐",e:"The two boys tend to vie with the girl for their mother's attention.",s:"compete"},
+{w:"violate",p:"v.",z:"違反，侵犯",e:"They were charged with violating federal law."},
+{w:"virulent",p:"a.",z:"劇毒的，充滿敵意的",e:"This is a highly transmissible but not very virulent strain of the virus.",src:"義守114"},
+{w:"vulnerable",p:"a.",z:"脆弱的，易受傷害的",e:"Your computer is vulnerable to hacking if you do not change the password regularly.",a:"invulnerable"},
+{w:"walkout",p:"n.",z:"聯合罷工，退席抗議",e:"Opposition legislators staged a walkout during the mayor's annual report."},
+{w:"wary",p:"a.",z:"小心的，有戒心的",e:"When you get anonymous phone calls, you should be wary of fraud."},
+{w:"weigh",p:"v.",z:"衡量，稱量",e:"The CEO made a choice after he had weighed all the options."},
+{w:"well-being",p:"n.",z:"健康快樂",e:"Yoga and meditation are said to enhance one's sense of well-being."},
+{w:"wisecrack",p:"n.",z:"俏皮話",e:"He made some wisecrack about my culinary ability."},
+{w:"withdraw",p:"v.",z:"取回，抽出，退出",e:"Following his nervous breakdown, he withdrew from public life and refused to give any interviews."},
+{w:"withering",p:"a.",z:"極傷人的，極強烈的",e:"He made a withering attack on the new policy."},
+{w:"workforce",p:"n.",z:"勞動力，全體勞工",e:"The nation's workforce is aging alongside the general population."},
+{w:"worth",p:"n./prep.",z:"價值；值得",e:"The estimated worth of the hidden treasure is 5 million dollars."},
+{w:"wreak",p:"v.",z:"造成（破壞）",e:"The missile strike wreaked havoc in the city.",c:"wreck"},
+{w:"wrestle",p:"n./v.",z:"角力；努力解決",e:"The government is wrestling with inflation, to no avail."},
+{w:"zoom",p:"v.",z:"（鏡頭）伸縮",e:"The camera zoomed in on one particular demonstrator, and then zoomed out."},
+/* --- Exam vocabulary: 中國醫 10年 + 義守醫 5年 (133 entries from 230-set list) --- */
+{w:"prevaricate",p:"v.",z:"閃爍其詞；⽀吾躲問題",e:"",src:"中國醫114",th:"政治態度"},
+{w:"subside",p:"v.",z:"平息；下陷",e:"Inflammation to subsidebefore proceeding withthe surgery.",src:"中國醫114",th:"通/醫學"},
+{w:"surmount",p:"v.",z:"克服；戰勝",e:"",src:"中國醫114",th:"通/挑戰"},
+{w:"correlate (with)",p:"v.",z:"...與相關",e:"Thathigh- sugarintake correlate s with an increased risk oftype 2 diabetes.",src:"中國醫114",th:"學術研究"},
+{w:"alleviate",p:"v.",z:"緩解；減輕",e:"This new pharmac disorders. Implementingpublichealth intervent",src:"中國醫114",th:"醫學通"},
+{w:"mitigate",p:"v.",z:"減輕；緩",e:"Ionsearlycan effective ly mitigatethespreadof thevirus. the medicalcommunity. Theclinichad tohire security",src:"中國醫114",th:"醫學通"},
+{w:"opprobrious",p:"adj.",z:"辱罵的；可恥的",e:"",src:"中國醫114",th:"態度/難度"},
+{w:"ostentatious",p:"adj.",z:"炫耀的；浮誇的",e:"Lobby, complete withmarble statues, was ) criticize d as awaste offunds.",src:"中國醫114",th:"態度/難度"},
+{w:"subservient",p:"adj.",z:"屈從的；奉承的",e:"",src:"中國醫114",th:"政治態度"},
+{w:"subversive",p:"adj.",z:"顛覆性的",e:"The article presented a subversive newtheorythat challenged thevery foundations ofmodern physics. ( c, the",src:"中國醫114",th:"政治社會"},
+{w:"eccentric",p:"adj.",z:"古怪的",e:"Nobel laureate' s conclusionswere undeniably brilliant.",src:"中國醫114",th:"通/態度"},
+{w:"equivocal",p:"adj.",z:"模稜兩可的；含糊不清的的回答",e:"",src:"中國醫114",th:"政治態度"},
+{w:"benevolent",p:"adj.",z:"仁慈的",e:"On allowedthe laborator y to purchase much- needed equipment.",src:"中國醫114",th:"通/態度"},
+{w:"affluent",p:"adj.",z:"富裕的",e:"Thestudynoted available in affluentcommunities.",src:"中國醫114",th:"經濟社會"},
+{w:"pejorative",p:"adj.",z:"貶義的；輕蔑的",e:"",src:"中國醫114",th:"語/學術"},
+{w:"xenophobic",p:"adj.",z:"排外的；恐外的",e:"Significa nt social barrierto implementingglobalhealth cooperation.",src:"中國醫114",th:"政治社會"},
+{w:"ubiquity",p:"n.",z:"無所不在",e:"",src:"中國醫114",th:"通/科技"},
+{w:"efficacy",p:"n.",z:"功效；效背",e:"Phase III clinicaltrials are designed to confirmthe efficacyandsafety ofa new treatment in alarge population. ( al",src:"中國醫114",th:"醫學藥學"},
+{w:"accredited",p:"adj.",z:"經認證的",e:"",src:"中國醫114",th:"學術機構"},
+{w:"survivorship",p:"n.",z:"癌症存活；倖存",e:"Cancer survivorship, addressing thelong- term effectsof treatment.",src:"中國醫114",th:"醫學"},
+{w:"reimbursement",p:"n.",z:"費⽤核銷；補償保險",e:"",src:"中國醫114",th:"醫學商業"},
+{w:"paradigm",p:"n.",z:"範式；典範",e:"Createda paradigm shift inhow medicine approached disease.",src:"中國醫114",th:"學術研究"},
+{w:"mercantilism",p:"n.",z:"重商主義",e:"The historian 's conflictin the 17th century.",src:"中國醫114",th:"經濟歷史"},
+{w:"geopolitics",p:"n.",z:"地緣政治",e:"Accessto critical medical supplies, such as vaccines, hasbecomea significa nt factorinmodern geopoliti cs. ( fertility specialis t",src:"中國醫114",th:"政治社會"},
+{w:"oocyte",p:"n.",z:"卵⺟細胞學",e:"Explained the processofoocyte retrieval and cryopres ervation.",src:"中國醫114",th:"醫學/物"},
+{w:"endometrial",p:"n.",z:"⼦宮內膜的",e:"",src:"中國醫114",th:"醫學/物"},
+{w:"inundated",p:"v.",z:"淹沒；喻應接不暇",e:"Inundated with contradictorydata, making aclear conclusion difficult.",src:"中國醫113",th:"通/學術"},
+{w:"implacable",p:"adj.",z:"難以平息的；不能安撫的",e:"",src:"中國醫113",th:"政治態度"},
+{w:"desist (from)",p:"v.",z:"停⽌；終⽤",e:"Company todesistfrommakingfalseclaimsabout its product' s efficacy.",src:"中國醫113",th:"法律正式"},
+{w:"didactic",p:"adj.",z:"說教的；教導的",e:"",src:"中國醫113",th:"哲學/學"},
+{w:"divergent",p:"adj.",z:"分歧的；相異的",e:"Divergent results, highlighti ng theneed for further investiga tion.",src:"中國醫113",th:"學術研究"},
+{w:"prowess",p:"n.",z:"⾼超的技巧；⾮凡的才能",e:"",src:"中國醫113",th:"通/學術"},
+{w:"affinity",p:"n.",z:"喜好；化親和",e:"Complex puzzles, whichled himto study cryptography.",src:"中國醫113",th:"通/物"},
+{w:"inherentin",p:"adj.phr.",z:"...內在於的；固有的",e:"Inherentin anystudythatrelies onself- reporteddata.",src:"中國醫113",th:"學術哲學"},
+{w:"perpetuate",p:"v.",z:"...使永久...化；使持續",e:"",src:"中國醫113",th:"社會學"},
+{w:"cohesiveness",p:"n.",z:"凝聚⼒；結合",e:"D thesocial cohesiveness ofthe Roman Empire's various provinces.",src:"中國醫113",th:"社會學"},
+{w:"monolithic",p:"adj.",z:"鐵板⼀塊的；單⼀的",e:"",src:"中國醫113",th:"政治社會"},
+{w:"chicanery",p:"n.",z:"詭辯；欺騙；詐術",e:"Financial chicanery to hidehis campaign's true funding sources.",src:"中國醫112",th:"政治法律"},
+{w:"leverage",p:"v.",z:"善加利⽤槓桿",e:"Theteamhopes to leverage AI to analyze patientdata and identify disease patternsmore efficientl y. ( patronizi ng tone",src:"中國醫112",th:"商業科技"},
+{w:"patronizing",p:"adj.",z:"擺出恩賜態度的；屈尊俯就的",e:"Madethe patientfeelsmallan)d unheard.",src:"中國醫112",th:"態度/難度"},
+{w:"ubiquitous",p:"adj.",z:"無所不在的",e:"The smartphone hasbecome ubiquitous inmodern society, transformingcommun ication. ( es, likeoffice etiquette",src:"中國醫112",th:"科技學術"},
+{w:"intangibles",p:"n.",z:"無形的事範",e:"And \"howthingsaredone,\" are difficult to learn remotely.",src:"中國醫112",th:"社會商業"},
+{w:"signifier",p:"n.",z:"符號；能指",e:"",src:"中國醫112",th:"哲學語/學"},
+{w:"facilitated",p:"v.(past)",z:"促進；...使更便捷",e:"L softwarehas facilitate d the analysisof large- scale genomicdata.",src:"中國醫112",th:"學術科技"},
+{w:"plagued (by)",p:"v.(past)",z:"困擾；折磨",e:"",src:"中國醫112",th:"醫學社會"},
+{w:"persist",p:"v.",z:"在",e:"For morethan 48 hours, youshould consulta physician.",src:"中國醫112",th:"醫學通"},
+{w:"zeitgeist",p:"n.",z:"時代精神",e:"\"Goblinmode\" wasseen as pressure. Thecompany's ethos",src:"中國醫112",th:"社會/化"},
+{w:"ethos",p:"n.",z:"精神；理念",e:"Is builton innovatio n and patient- centriccare.",src:"中國醫112",th:"哲學社會"},
+{w:"barometer",p:"n.",z:"氣壓計；喻指標",e:"",src:"中國醫112",th:"學術通"},
+{w:"aphasia",p:"n.",z:"失語症",e:"Aphasiais an impairment of language, affecting the production or comprehensionofspeechand the ability toread orwrite. ( manipulation in",src:"中國醫112",th:"醫學"},
+{w:"gaslighting",p:"n.",z:"煤氣燈效操縱",e:"Which apersonseeks tomake avictim questiontheirown reality.",src:"中國醫112",th:"理/化"},
+{w:"permacrisis",p:"n.",z:"永久危機",e:"",src:"中國醫112",th:"政治/化"},
+{w:"heterogeneous",p:"adj.",z:"異質的；由不同部",e:"The study's difficult. The new",src:"中國醫112",th:"醫學研究"},
+{w:"triggered",p:"v.(past)",z:"觸發；引起",e:"Policy triggered a widespreadpublic backlash.",src:"中國醫111",th:"醫學通"},
+{w:"pummeled",p:"v.(past)",z:"重擊；嚴重打擊",e:"",src:"中國醫111",th:"通/衝擊"},
+{w:"synoptic",p:"adj.",z:"概要的；綜觀的提防的",e:"Synopticreviewof the literature on neuropla sticity. preliminary data. The constant",src:"中國醫111",th:"學術"},
+{w:"holistically",p:"adv.",z:"整體地；全⾯地",e:"Assessthe patient's needs holistical ly, notjust their physicalsymptoms.",src:"中國醫111",th:"醫學學術"},
+{w:"disciplines",p:"n.(pl.)",z:"學科",e:"",src:"中國醫111",th:"學術"},
+{w:"mutate",p:"v.",z:"突變",e:"Mutateinto aform thatis resistant to current vaccines.",src:"中國醫111",th:"醫學/物"},
+{w:"dampen",p:"v.",z:"抑制；...使沮喪",e:"Repetitiv e natureof thetask candampen motivation.",src:"中國醫111",th:"態度"},
+{w:"diverges (from)",p:"v.",z:"分歧；偏離",e:"",src:"中國醫111",th:"學術"},
+{w:"concoction",p:"n.",z:"混合物；調製品",e:"Contained a concoction of 20 different odor molecules.",src:"中國醫111",th:"通"},
+{w:"apprehension",p:"n.",z:"1.理解；2.領會",e:"",src:"中國醫110",th:"語/學/理"},
+{w:"deficit",p:"n.",z:"缺陷；⾚字",e:"Ical deficitcommonly associated with Broca's aphasia.",src:"中國醫110",th:"醫學語/學"},
+{w:"infinite",p:"adj.",z:"無限的",e:"",src:"中國醫110",th:"哲學語/學"},
+{w:"put-upon",p:"adj.",z:"受到苛待的；負擔過重的",e:"",src:"中國醫110",th:"社會學/語"},
+{w:"exorbitant",p:"adj.",z:"價格過⾼的；⾼得離譜的",e:"",src:"中國醫110",th:"經濟"},
+{w:"quandary",p:"n.",z:"困境；左右為難",e:"Historian s in a quandary, as it contradicted establish ed timelines.",src:"中國醫110",th:"哲學"},
+{w:"polemic",p:"n.",z:"激烈的辯論；檄⽂",e:"",src:"中國醫110",th:"政治學術"},
+{w:"analogous",p:"adj.",z:"類似的；可類⽐的",e:"Arms ofahuman, sharingacommon evolution ary origin.",src:"中國醫110",th:"學術/物"},
+{w:"mastery",p:"n.",z:"精通；掌握",e:"",src:"中國醫110",th:"語/學"},
+{w:"disparate",p:"adj.",z:"截然不同的",e:"Disparate findingsfrom cognitiv scienceand sociology.",src:"中國醫110",th:"學術"},
+{w:"propensity",p:"n.",z:"不良傾向；習性",e:"",src:"中國醫110",th:"理學"},
+{w:"paradox",p:"n.",z:"悖論；似是⽽⾮的⽭盾",e:"We rationall y knowdeath isfinal, yet intuitivel y reject extinctio n.",src:"中國醫110",th:"哲學"},
+{w:"exasperating",p:"adj.",z:"令⼈惱怒的；使",e:"Atinglyslow recoverytestedthe patience.",src:"中國醫110",th:"理學"},
+{w:"ontology",p:"n.",z:"本體論；存在論",e:"An emergent ontologyratherthan astableone.",src:"中國醫110",th:"哲學"},
+{w:"induce",p:"v.",z:"誘導；引起",e:"",src:"中國醫109",th:"醫學通"},
+{w:"appraise",p:"v.",z:"評估；鑑定",e:"Term efficacyandsafety ofthe proposed treatment.",src:"中國醫109",th:"學術商業"},
+{w:"Morpheus",p:"n.",z:"摩⽿甫斯神」",e:"Enervating day, he wassoon inthe armsof Morpheus.",src:"中國醫109",th:"化"},
+{w:"infrastructure",p:"n.",z:"基礎設施",e:"Thestudyfound population. The filmwas a gritty,",src:"中國醫109",th:"社會學經濟"},
+{w:"gritty",p:"adj.",z:"堅韌不拔指粗糙的、寫實的",e:"Unflinchi ng portrayal of urban povertyand resilienc e.",src:"中國醫109",th:"化態度"},
+{w:"spectrum",p:"n.",z:"光譜；範圍",e:"",src:"中國醫109",th:"學術科學"},
+{w:"spontaneously",p:"adv.",z:"⾃發地；⾃然地",e:"",src:"中國醫109",th:"醫學/物"},
+{w:"exemplar",p:"n.",z:"範例；典型",e:"Readingis a classic exemplar of phonological recoding.",src:"中國醫109",th:"學術"},
+{w:"prevaricates",p:"v.",z:"閃爍其詞；⽀吾其詞",e:" 2025 Q4!  felt immediately.",src:"中國醫109",th:"政治態度"},
+{w:"confronted",p:"v.(past)",z:"⾯對；對抗",e:"Ed withan ethical dilemmaforwhichtherewas noeasy answer.",src:"中國醫108",th:"法律通"},
+{w:"attributes",p:"n.(pl.)",z:"屬性；特質",e:"",src:"中國醫108",th:"哲學學術"},
+{w:"prescient",p:"adj.",z:"有先⾒之明的",e:"Global pandemic nowseemseerily prescient.",src:"中國醫108",th:"化"},
+{w:"catapults",p:"v.",z:"...使⼀躍⽽成；彈射",e:"",src:"中國醫108",th:"通"},
+{w:"superfluous",p:"adj.",z:"多餘的；不必要的",e:"Ous administrativetasks, freeing clinician s tofocus on patients.",src:"中國醫108",th:"學術"},
+{w:"piqued",p:"v.(past)",z:"趣",e:"",src:"中國醫108",th:"態度"},
+{w:"withstand",p:"v.",z:"承受；抵擋",e:"Withstand significa nt mechanicalstressover decades.",src:"中國醫108",th:"通/醫學"},
+{w:"stoodstill",p:"v.phr.",z:"停滯不前",e:"Internet- related technology hasnotstoodstill.",src:"中國醫108",th:"科技通"},
+{w:"blur",p:"v.",z:"...使模糊",e:"Robotics... willblur theline betweenpersonand instrumethat",src:"中國醫108",th:"科技哲學"},
+{w:"irrevocably",p:"adv.",z:"不可撤銷地；無法挽回地",e:"Brainswill be irrevocablydamaged soonafterdeath.",src:"中國醫108",th:"醫學法律"},
+{w:"exacerbates",p:"v.",z:"使惡化；加劇",e:" 2025!  The discovery exacerbates the tug-of- war between... The passage critiques humanki",src:"中國醫108",th:"醫學社會"},
+{w:"hubris",p:"n.",z:"傲慢；⾃",e:"Nd'shubris in believing theyhaved science.",src:"中國醫108",th:"哲學"},
+{w:"impaired",p:"adj.",z:"受損的",e:"Illness resultedin permanently impaired vision.",src:"中國醫107",th:"醫學"},
+{w:"lethargic",p:"adj.",z:"昏睡的；無精打采的",e:"On oftenleaves patients feeling lethargic and drowsy.",src:"中國醫107",th:"醫學態度"},
+{w:"soliloquies",p:"n.(pl.)",z:"戲劇獨⽩",e:"",src:"中國醫107",th:"學"},
+{w:"reimburse",p:"v.",z:"償還；核銷",e:"Reimburse you forall travel expenses upon submission of receipts.",src:"中國醫107",th:"財經商業"},
+{w:"impinged (on)",p:"v.(past)",z:"衝擊；侵犯",e:"Regulatio ns impinged on the fundamentalrights ofthe citizens.",src:"中國醫107",th:"社會法律"},
+{w:"hone",p:"v.",z:"巧",e:"To Paristo honeher skillsas apastrychef.",src:"中國醫107",th:"通"},
+{w:"remedial",p:"adj.",z:"補救的；治療的",e:"",src:"中國醫107",th:"教育醫學"},
+{w:"tentative",p:"adj.",z:"試探性的；暫時的",e:"Reacheda tentative conclusion, pending furtherdata.",src:"中國醫107",th:"學術科學"},
+{w:"contentious",p:"adj.",z:"有爭議的",e:"Remainsa highly contentiousissue inthe scientific community.",src:"中國醫106",th:"政治學術"},
+{w:"maintained",p:"v.(past)",z:"堅決主張",e:"",src:"中國醫106",th:"學術"},
+{w:"fabricating",p:"v.(pres.",z:"捏造；偽.造",e:"Fired for fabricati ng datain amajor clinicaltrial.",src:"中國醫106",th:"法律學術"},
+{w:"vowing",p:"v.(pres.",z:".發誓；鄭重宣稱",e:"",src:"中國醫106",th:"政治態度"},
+{w:"regulates",p:"v.",z:"調節；控管",e:"Part ofthe brainthat regulates body temperature and hunger.",src:"中國醫106",th:"醫學/物"},
+{w:"unsubstantiated",p:"adj.",z:"未經證實的；無事實根據的",e:"",src:"中國醫106",th:"學術法律"},
+{w:"disembodied",p:"adj.",z:"無實體的；脫離⾁體的",e:"Presence, offering guidance withoutany physicalform.  AI )",src:"中國醫106",th:"科技哲學"},
+{w:"belligerent",p:"adj.",z:"好⾾的；好戰的",e:"",src:"中國醫106",th:"態度"},
+{w:"upbraiding",p:"v.(pres.",z:"責罵；訓.斥",e:"Heard upbraiding theinternfor aminor procedural error.",src:"中國醫106",th:"態度"},
+{w:"elucidate",p:"v.",z:"闡明；說明",e:"",src:"中國醫106",th:"學術"},
+{w:"hazard",p:"n.",z:"⾵險；危害",e:"Significa ntly increases the riskof lung cancer.",src:"中國醫106",th:"醫學環境"},
+{w:"nascent",p:"adj.",z:"新⽣的；初期的",e:"",src:"中國醫106",th:"科技學術"},
+{w:"idiosyncraticnded",p:"adj.",z:"獨特的；怪異的惡化",e:"Language has itsown idiosyncratics and syntax. publichealth emergency. Treatinginfantpain is a dauntingtask for",src:"中國醫106",th:"學術"},
+{w:"inflammatory",p:"adj.",z:"炎症的；發炎的",e:"Anti- inflammatorycompounds. )  Q15 inflammable ) rapidly. In TCM,",src:"義守114",th:"醫學陷阱"},
+{w:"pungent",p:"adj.",z:"味道刺鼻的；⾟辣的",e:"Garlic is classifie d as a pungentherbto dispersecold. s. The new digital platform",src:"義守114",th:"醫學"},
+{w:"supersede",p:"v.",z:"取代；替代",e:"Is expected to supersede all previouspaper- based systems.",src:"義守114",th:"科技學術"},
+{w:"precipitously",p:"adv.",z:"猛然地；倉促地",e:"Following thenews, stockpricesfell precipito usly.",src:"義守114",th:"經濟通"},
+{w:"precedence",p:"n.",z:"優先權",e:"The patient's safetymustalways...) The bacteria",src:"義守114",th:"社會學術"},
+{w:"prolifically",p:"adv.",z:"多產地；⼤量地",e:"Reproduced prolificall y in thewarm, nutrient- rich environment.",src:"義守114",th:"物通"},
+{w:"impermeable",p:"adj.",z:"不可滲透的",e:"The cellmembrane issemi-...) Oblivious to the",src:"義守114",th:"物科技"},
+{w:"oblivious (to)",p:"adj.",z:"未察覺的；健忘的",e:"Rising ethical concerns, the lab continued its controversial research.",src:"義守114",th:"態度"},
+{w:"scrutinizeusly",p:"v.",z:"仔細審查倉促地",e:"Ethics committee must scrutiniz e everydetail ofthe research proposal. The patient's",src:"義守114",th:"學術經濟通"},
+{w:"prone (to)",p:"adj.phr.",z:"...易於；...有的傾向",e:"",src:"義守114",th:"醫學"},
+{w:"ingenuity",p:"n.",z:"獨創性；巧思",e:"Engineers were praisedfor the ingenuity of their design. Debiasing",src:"義守113",th:"科技學術"},
+{w:"denounced",p:"v.(past)",z:"公開譴責",e:"Group denounced the invasionas a violation of internati onal law.",src:"義守112",th:"政治社會"},
+{w:"immerse",p:"v.",z:"...使沉浸",e:"Learn the language, youmust immerse yourselfin the culture. Elderly patients",src:"義守112",th:"通/學術"},
+{w:"susceptible (to)",p:"adj.",z:"...易受影響的",e:"Are particula rly susceptible to complicationsfrom theflu. The committee",src:"義守111",th:"醫學"},
+{w:"exhaustive",p:"adj.",z:"詳盡的；徹底的",e:"Conducted an exhaustivereviewall available data.",src:"義守111",th:"學術"},
+/* --- Supplementary entries: confused-pair partners not in main list --- */
+{w:"callus",p:"n.",z:"繭，硬皮",e:"Pianists often develop a callus on their fingertips from years of practice.",c:"callous"},
+{w:"nature",p:"n.",z:"本性，天性；大自然",e:"Whether intelligence comes from nature or nurture is still debated.",c:"nurture"},
+{w:"reluctant",p:"a.",z:"不情願的，勉強的",e:"She was reluctant to share the bad news with her family.",c:"reticent"},
+{w:"travel",p:"v./n.",z:"旅行",e:"We plan to travel to Japan once the borders fully reopen.",c:"travail"},
+{w:"wreck",p:"v./n.",z:"毀壞；殘骸",e:"The storm wrecked the small fishing boats in the harbor.",c:"wreak"},
+{w:"daze",p:"n./v.",z:"茫然；恍惚",e:"He wandered around in a daze after hearing the news.",c:"dazzle"}
+];
+
+/* Curated confused-pair notes */
+const CONFUSED_NOTES = {
+  "callous|callus":"<em>callous</em>(adj.麻木冷酷的) vs <em>callus</em>(n.繭、硬皮)。同字根但詞性與用法完全不同。",
+  "curb|curtail":"<em>curb</em>(v.控制、抑制，比較中性) vs <em>curtail</em>(v.削減、縮短，強調規模或時間的減少)。",
+  "fad|fade":"<em>fad</em>(n.一時的流行、潮流) vs <em>fade</em>(v.褪色、消減、消失)。",
+  "flaunt|flout":"<em>flaunt</em>(v.誇耀、炫耀) vs <em>flout</em>(v.藐視、公然違反)。常考字！意思幾乎相反。",
+  "imperative|imperious":"<em>imperative</em>(adj./n.必要的；命令) vs <em>imperious</em>(adj.專橫的、傲慢的)。形似但意義不同。",
+  "nurture|nature":"<em>nurture</em>(v./n.培育、養育，後天) vs <em>nature</em>(n.本性、天性，先天)。「先天 vs 後天」對照組。",
+  "palliative|palpation":"<em>palliative</em>(adj./n.緩解的、安寧療法) vs <em>palpation</em>(n.觸診)。都是醫學詞，但意義完全不同。",
+  "reticent|reluctant":"<em>reticent</em>(adj.沉默寡言的，不愛說話) vs <em>reluctant</em>(adj.不情願的)。前者是性格，後者是當下態度。",
+  "travail|travel":"<em>travail</em>(n.艱苦、折磨) vs <em>travel</em>(v./n.旅行)。拼法只差一個字母，意思南轅北轍。",
+  "wreak|wreck":"<em>wreak</em>(v.造成破壞，常見 wreak havoc) vs <em>wreck</em>(v./n.毀壞、殘骸)。同源但用法不同。",
+  "dazzle|daze":"<em>dazzle</em>(v.使目眩、令人讚歎) vs <em>daze</em>(v./n.使茫然、發愣)。都是「眼花」相關，但程度與情境不同。"
+};
+
+/* Reading-comprehension passages with blanks (post-TCM exam style) */
+const PASSAGES = [
+  {
+    title:"On Antiviral Vaccination",
+    text:"Few public health interventions rival the impact of mass [[1]]. By exposing the immune system to a weakened or [[2]] form of a pathogen, vaccines prepare the body to mount a swift response should the actual virus invade. The recent global pandemic underscored a sobering truth: nations that achieved high [[3]] of immunization weathered the storm with markedly lower mortality. Yet, [[4]] populations remain — particularly the elderly and the immunocompromised — for whom continued [[5]] is essential.",
+    blanks:[
+      {idx:1,ans:"inoculation",pool:["inoculation","incarceration","incubation","invigoration"]},
+      {idx:2,ans:"virulent",pool:["virulent","vibrant","vigilant","vascular"]},
+      {idx:3,ans:"uptake",pool:["uptake","upheaval","upbringing","uphold"]},
+      {idx:4,ans:"vulnerable",pool:["vulnerable","vibrant","virulent","veteran"]},
+      {idx:5,ans:"vigilance",pool:["vigilance","virulence","vacancy","violence"]}
+    ]
+  },
+  {
+    title:"Traditional Medicine in Diagnosis",
+    text:"Traditional Chinese medicine has long relied on [[1]] of the pulse as a primary diagnostic tool. A skilled [[2]] can identify imbalances by sensing subtle variations at three positions on the wrist. Unlike Western practice, which often privileges [[3]] data drawn from instruments, the older tradition adopts a [[4]] approach — treating the patient as an integrated whole rather than a collection of symptoms. Modern researchers, however, are now [[5]] this ancient knowledge using rigorous clinical trials.",
+    blanks:[
+      {idx:1,ans:"palpation",pool:["palpation","palliative","population","pollution"]},
+      {idx:2,ans:"practitioner",pool:["practitioner","predator","protester","pretender"]},
+      {idx:3,ans:"empirical",pool:["empirical","imperial","imperative","empyreal"]},
+      {idx:4,ans:"holistic",pool:["holistic","hostile","habitual","heroic"]},
+      {idx:5,ans:"scrutinizing",pool:["scrutinizing","scrambling","scrounging","sprinkling"]}
+    ]
+  },
+  {
+    title:"Mental Health and Society",
+    text:"Long-term exposure to stressors — financial precarity, social isolation, or [[1]] childhood experiences — can leave lasting psychological scars. Patients suffering from severe depression sometimes report [[2]], hearing voices that are not there. In acute cases, [[3]] intervention is necessary, and antipsychotic medications may be prescribed under careful supervision. Family support, however, remains the [[4]] of recovery; without it, even the best treatment may fail to produce [[5]] improvement.",
+    blanks:[
+      {idx:1,ans:"traumatic",pool:["traumatic","therapeutic","tedious","tactical"]},
+      {idx:2,ans:"hallucinations",pool:["hallucinations","habitations","hesitations","humiliations"]},
+      {idx:3,ans:"psychiatric",pool:["psychiatric","pharmaceutical","philosophical","photographic"]},
+      {idx:4,ans:"bedrock",pool:["bedrock","backfire","barrage","buzzword"]},
+      {idx:5,ans:"remarkable",pool:["remarkable","reluctant","reticent","ridiculous"]}
+    ]
+  },
+  {
+    title:"On Cancer Treatment",
+    text:"For decades, [[1]] and radiotherapy have been the twin pillars of oncology. Both treatments aim to destroy malignant cells, though their toll on healthy tissue can be considerable. When a [[2]] proves inoperable or has spread beyond the reach of surgery, [[3]] care becomes the focus — relieving symptoms rather than seeking a cure. Recent breakthroughs in immunotherapy have begun to [[4]] older methods in certain cancers, while genetic profiling enables more [[5]] choice of regimen.",
+    blanks:[
+      {idx:1,ans:"chemotherapy",pool:["chemotherapy","companionship","contemplation","commerce"]},
+      {idx:2,ans:"tumor",pool:["tumor","tremor","traitor","toddler"]},
+      {idx:3,ans:"palliative",pool:["palliative","perilous","painful","plausible"]},
+      {idx:4,ans:"supplant",pool:["supplant","support","supply","suppress"]},
+      {idx:5,ans:"rational",pool:["rational","random","rampant","radical"]}
+    ]
+  },
+  {
+    title:"On Public Health Crises",
+    text:"At the [[1]] of an epidemic, even well-resourced health systems can be quickly [[2]] by surging case loads. Hospital wards run short of staff and equipment; [[3]] doctors work double shifts under crushing fatigue. Government measures — quarantines, travel restrictions, school closures — may [[4]] transmission, but each carries social and economic costs. The [[5]] question, ultimately, is whether the benefits to public health outweigh the harm of prolonged disruption.",
+    blanks:[
+      {idx:1,ans:"outbreak",pool:["outbreak","outcry","outrage","outset"]},
+      {idx:2,ans:"overwhelmed",pool:["overwhelmed","overhauled","overshadowed","overlooked"]},
+      {idx:3,ans:"beleaguered",pool:["beleaguered","bewildered","beguiled","betrayed"]},
+      {idx:4,ans:"curtail",pool:["curtail","cultivate","culminate","curate"]},
+      {idx:5,ans:"pressing",pool:["pressing","piercing","plunging","preserving"]}
+    ]
+  },
+  {
+    title:"Aging and Chronic Disease",
+    text:"As populations age, chronic conditions such as [[1]] become increasingly prevalent. Joints stiffen, cardiovascular risk climbs, and neural [[2]] declines, making it harder for older adults to recover from injury. A balanced [[3]] approach — combining adequate nutrition, regular exercise, and social engagement — has been shown to delay deterioration. Health practitioners often [[4]] their patients to remain physically active, since [[5]] habits accelerate frailty.",
+    blanks:[
+      {idx:1,ans:"arthritis",pool:["arthritis","authority","arsenic","aversion"]},
+      {idx:2,ans:"plasticity",pool:["plasticity","publicity","pottery","privacy"]},
+      {idx:3,ans:"dietary",pool:["dietary","decorative","dubious","drowsy"]},
+      {idx:4,ans:"hearten",pool:["hearten","hamper","hasten","handle"]},
+      {idx:5,ans:"sluggish",pool:["sluggish","savvy","slanted","sagacious"]}
+    ]
+  }
+];
+
+/* ============================================================
+   STORAGE
+   ============================================================ */
+const STORE_KEY = "hzy_vocab_v1";
+const SETTINGS_KEY = "hzy_vocab_settings_v1";
+function loadStore(){
+  try{const r=localStorage.getItem(STORE_KEY);if(r)return JSON.parse(r)}catch(e){}
+  return {wordStats:{},sessions:[]};
+}
+function saveStore(s){try{localStorage.setItem(STORE_KEY,JSON.stringify(s))}catch(e){}}
+function loadSettings(){
+  try{const r=localStorage.getItem(SETTINGS_KEY);if(r)return Object.assign({},DEFAULT_SETTINGS,JSON.parse(r))}catch(e){}
+  return Object.assign({},DEFAULT_SETTINGS);
+}
+function saveSettings(s){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(s))}catch(e){}}
+const DEFAULT_SETTINGS = {dailyTarget:20,speechRate:0.85,autoSpeak:1};
+
+let store = loadStore();
+let settings = loadSettings();
+
+/* per-word stats: {seen, correct, wrong, lastSeen, dueAt} */
+function getStat(w){
+  if(!store.wordStats[w]) store.wordStats[w]={seen:0,correct:0,wrong:0,lastSeen:0,dueAt:0};
+  return store.wordStats[w];
+}
+function recordResult(w, isCorrect){
+  const st = getStat(w);
+  st.seen++;
+  if(isCorrect) st.correct++; else st.wrong++;
+  st.lastSeen = Date.now();
+  // simple spaced-repetition: correct → push out further; wrong → review soon
+  const now = Date.now();
+  const day = 86400000;
+  if(isCorrect){
+    const streak = Math.max(0, st.correct - st.wrong);
+    const interval = [1,2,4,7,15,30,60][Math.min(streak,6)] || 60;
+    st.dueAt = now + interval*day;
+  }else{
+    st.dueAt = now + 0.5*day;
+  }
+  saveStore(store);
+}
+
+/* ============================================================
+   TODAY SESSION TRACKER
+   ============================================================ */
+function todayKey(){
+  const d=new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+function getTodaySession(){
+  let t = store.sessions.find(s=>s.date===todayKey());
+  if(!t){t={date:todayKey(),attempted:0,correct:0};store.sessions.push(t);saveStore(store)}
+  return t;
+}
+function bumpToday(isCorrect){
+  const t=getTodaySession();
+  t.attempted++;
+  if(isCorrect)t.correct++;
+  saveStore(store);
+}
+
+/* ============================================================
+   PRONUNCIATION
+   ============================================================ */
+function speak(text){
+  if(!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = parseFloat(settings.speechRate)||0.85;
+  // Try to select a clear English voice
+  const voices = window.speechSynthesis.getVoices();
+  const pref = voices.find(v=>/en-US/i.test(v.lang) && /samantha|google|natural/i.test(v.name)) ||
+               voices.find(v=>/en-US/i.test(v.lang)) ||
+               voices.find(v=>/en/i.test(v.lang));
+  if(pref) u.voice = pref;
+  window.speechSynthesis.speak(u);
+}
+// Force voices to load on some browsers
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = ()=>{};
+  window.speechSynthesis.getVoices();
+}
+
+/* ============================================================
+   VIEW: HOME
+   ============================================================ */
+function renderHome(){
+  const totalLearned = Object.values(store.wordStats).filter(s=>s.seen>0).length;
+  const totalMastered = Object.values(store.wordStats).filter(s=>s.correct >= s.wrong+2).length;
+  const t = getTodaySession();
+  const acc = t.attempted ? Math.round(100*t.correct/t.attempted) : 0;
+
+  // Find weak words (seen 2+ times, accuracy < 60%)
+  const weakWords = Object.entries(store.wordStats)
+    .filter(([w,s])=>s.seen>=2 && s.correct/(s.seen||1) < 0.6)
+    .sort((a,b)=>(a[1].correct/(a[1].seen||1)) - (b[1].correct/(b[1].seen||1)))
+    .slice(0,8)
+    .map(([w])=>VOCAB.find(v=>v.w===w))
+    .filter(Boolean);
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <header class="masthead">
+      <div class="eyebrow">Post-TCM English Trainer</div>
+      <h1 class="title">Vocabulary Practice<span class="cn">後中醫英文單字練習器</span></h1>
+      <div class="sub">針對閱讀醫學期刊、句子填空與字義辨析設計 · 共 ${VOCAB.length} 字（含 ${VOCAB.filter(v=>v.src).length} 字曾出現於中國醫/義守考古題）</div>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><div class="n">${t.attempted}</div><div class="l">今日題數</div></div>
+      <div class="stat"><div class="n">${acc}<span style="font-size:.5em;color:var(--ink-mute)">%</span></div><div class="l">今日正確率</div></div>
+      <div class="stat"><div class="n">${totalLearned}</div><div class="l">已練字數</div></div>
+      <div class="stat"><div class="n">${totalMastered}</div><div class="l">已熟練</div></div>
+    </div>
+
+    <div class="sec-h">練習模式 · Modes</div>
+    <div class="modes">
+      <button class="mode" onclick="startMode('cloze')">
+        <span class="num">MODE 01</span>
+        <div class="t">句子填空</div>
+        <div class="t-en">Sentence Cloze</div>
+        <div class="d">在句子中挖空關鍵字，從 4 個選項中選出最符合語境的字。混淆選項涵蓋拼字相近與意義相近字。</div>
+      </button>
+      <button class="mode" onclick="startMode('passage')">
+        <span class="num">MODE 02</span>
+        <div class="t">段落填空</div>
+        <div class="t-en">Passage Cloze</div>
+        <div class="d">模擬期刊閱讀情境，給一段醫學或科學短文，需在多個空格中選出正確字。共 ${PASSAGES.length} 篇。</div>
+      </button>
+      <button class="mode" onclick="startMode('synant')">
+        <span class="num">MODE 03</span>
+        <div class="t">同義 / 反義字</div>
+        <div class="t-en">Synonym &amp; Antonym</div>
+        <div class="d">給目標字，從 4 個選項中選出意思「相同」或「相反」者。橫向連結訓練字彙網絡。</div>
+      </button>
+      <button class="mode" onclick="startMode('confused')">
+        <span class="num">MODE 04</span>
+        <div class="t">混淆字辨義</div>
+        <div class="t-en">Confused Pairs</div>
+        <div class="d">針對拼字或意義相近的高頻混淆字，給情境句子，選出符合該句意的正確字。共 ${Object.keys(CONFUSED_NOTES).length} 組。</div>
+      </button>
+      <button class="mode" onclick="startMode('exam')" style="grid-column:1/-1;background:linear-gradient(135deg,var(--paper),#f0e5cd);border-color:var(--ochre)">
+        <span class="num">MODE 05 · 重點</span>
+        <div class="t">考古題單字 · 強化訓練</div>
+        <div class="t-en">Past Exam Vocabulary</div>
+        <div class="d">只練習曾於中國醫（10 年）、義守醫（5 年）出現過的單字，共 ${VOCAB.filter(v=>v.src).length} 字。題型隨機混合句子填空與同義反義。</div>
+      </button>
+    </div>
+
+    <div class="sec-h">需要加強的字 <span class="right">Weak Words</span></div>
+    <div class="weak-list">
+      ${weakWords.length ? weakWords.map(v=>{
+        const s = store.wordStats[v.w];
+        const r = Math.round(100*s.correct/s.seen);
+        return `<div class="weak-row"><span class="ww">${v.w}</span><span class="wzh">${v.z}</span><span class="wstat">${r}%</span></div>`;
+      }).join('') : `<div class="weak-empty">尚未累積足夠資料 · 開始練習後，答錯較多的字會列在這裡</div>`}
+    </div>
+
+    <div class="settings-bar">
+      <span class="s-link" onclick="openSettings()">⚙ 設定</span>
+      <span style="color:var(--line)">|</span>
+      <span class="s-link" onclick="exportProgress()">↓ 匯出進度</span>
+      <span style="color:var(--line)">|</span>
+      <span class="s-link" onclick="importProgress()">↑ 匯入進度</span>
+    </div>
+
+    <footer class="foot">
+      字彙取自補習班英文老師整理講義（其他通用學術字彙，<em>A → Z</em>）<br>
+      所有學習進度儲存於本機瀏覽器 · 不會上傳任何資料
+    </footer>
+  `;
+}
+
+/* ============================================================
+   PRACTICE SESSIONS
+   ============================================================ */
+let session = null;
+
+function startMode(mode){
+  session = {mode, idx:0, total:settings.dailyTarget, correct:0, wrong:0, questions:[]};
+  if(mode==='cloze') buildClozeSession();
+  else if(mode==='passage') buildPassageSession();
+  else if(mode==='synant') buildSynAntSession();
+  else if(mode==='confused') buildConfusedSession();
+  else if(mode==='exam') buildExamSession();
+  renderQuestion();
+}
+
+function buildExamSession(){
+  // Practice ONLY words that have a src tag (exam vocabulary)
+  const examWords = VOCAB.filter(v=>v.src);
+  const used = new Set();
+  for(let i=0;i<session.total;i++){
+    let v;
+    let tries=0;
+    do{
+      v = examWords[Math.floor(Math.random()*examWords.length)];
+      tries++;
+    }while(used.has(v.w) && tries<30);
+    used.add(v.w);
+    // Mix question types: 60% cloze, 40% synonym/antonym/meaning-pick
+    const r = Math.random();
+    if(r < 0.6 && v.e){
+      // Cloze
+      const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\w*\\b","i"),"___");
+      const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
+      const distractors = pickDistractorsForWord(v, 3);
+      const opts = shuffle([v.w, ...distractors]);
+      session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+    } else {
+      // Meaning pick: show word, choose correct Chinese meaning
+      const wrongVocab = shuffle(VOCAB.filter(x=>x.w!==v.w && x.z!==v.z)).slice(0,3);
+      const opts = shuffle([v.z, ...wrongVocab.map(x=>x.z)]);
+      session.questions.push({type:'meaning', target:v, opts, ans:v.z});
+    }
+  }
+}
+
+function pickWeightedDueWord(){
+  // Prefer words with low accuracy or due for review
+  const now = Date.now();
+  const candidates = VOCAB.map(v=>{
+    const s = store.wordStats[v.w] || {seen:0,correct:0,wrong:0,dueAt:0};
+    let weight = 1;
+    if(s.seen===0) weight = 3; // new words
+    else {
+      const acc = s.correct/(s.seen||1);
+      weight = 1 + (1-acc)*4;
+      if(s.dueAt && s.dueAt < now) weight *= 2;
+    }
+    return {v, weight};
+  });
+  const total = candidates.reduce((a,b)=>a+b.weight,0);
+  let r = Math.random()*total;
+  for(const c of candidates){
+    r -= c.weight;
+    if(r<=0) return c.v;
+  }
+  return candidates[0].v;
+}
+
+function buildClozeSession(){
+  const used = new Set();
+  for(let i=0;i<session.total;i++){
+    let v;
+    let tries=0;
+    do{ v = pickWeightedDueWord(); tries++; }while(used.has(v.w) && tries<30);
+    used.add(v.w);
+    // Build question: sentence with the word blanked
+    const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\b","i"),"___");
+    // If the exact word doesn't appear, try common inflections
+    const finalStem = stem === v.e ? maskInflection(v.e, v.w) : stem;
+    const distractors = pickDistractorsForWord(v, 3);
+    const opts = shuffle([v.w, ...distractors]);
+    session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+  }
+}
+
+function escapeReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+
+// If example uses an inflected form (e.g., "abided" for "abide"),
+// mask the longest matching variant.
+function maskInflection(text, base){
+  // Irregular verb forms - manually handle common ones
+  const IRREGULAR = {
+    "slay":["slain","slew","slaying"],
+    "withdraw":["withdrew","withdrawn","withdrawing"],
+    "behold":["beheld","beholding"],
+    "weigh":["weighed","weighing"],
+    "thaw":["thawed","thawing"],
+    "draft":["drafted","drafting"],
+    "grind":["ground","grinding"],
+    "gnash":["gnashed","gnashing"]
+  };
+  const variants = [base, base+'s', base+'es', base+'ed', base+'d', base+'ing',
+                    base.replace(/e$/,'')+'ing', base.replace(/y$/,'ies'),
+                    base.replace(/y$/,'ied')];
+  if(IRREGULAR[base]) variants.push(...IRREGULAR[base]);
+  variants.sort((a,b)=>b.length-a.length);
+  for(const v of variants){
+    const re = new RegExp("\\b"+escapeReg(v)+"\\b","i");
+    if(re.test(text)) return text.replace(re, "___");
+  }
+  return text + " (___)";
+}
+
+function pickDistractorsForWord(target, n){
+  const out = [];
+  // Prefer words with same first letter or POS, or confused-pair partner
+  const pool = VOCAB.filter(v=>v.w!==target.w);
+  const shuffled = shuffle(pool.slice());
+  // 1) Add confused partner if exists
+  if(target.c){
+    const partner = VOCAB.find(v=>v.w===target.c);
+    if(partner) out.push(partner.w);
+  }
+  // 2) Same first letter
+  for(const v of shuffled){
+    if(out.length>=n) break;
+    if(out.includes(v.w)) continue;
+    if(v.w[0].toLowerCase()===target.w[0].toLowerCase()) out.push(v.w);
+  }
+  // 3) Same POS
+  for(const v of shuffled){
+    if(out.length>=n) break;
+    if(out.includes(v.w)) continue;
+    if(v.p===target.p) out.push(v.w);
+  }
+  // 4) Random
+  for(const v of shuffled){
+    if(out.length>=n) break;
+    if(!out.includes(v.w)) out.push(v.w);
+  }
+  return out.slice(0,n);
+}
+
+function buildPassageSession(){
+  const passages = shuffle(PASSAGES.slice()).slice(0, Math.min(PASSAGES.length, Math.max(2, Math.ceil(session.total/5))));
+  session.total = passages.length;
+  passages.forEach(p=>{
+    session.questions.push({type:'passage', passage:p});
+  });
+}
+
+function buildSynAntSession(){
+  // Use words that have either s (synonym) or a (antonym)
+  const candidates = VOCAB.filter(v=>v.s||v.a);
+  const picked = shuffle(candidates).slice(0, session.total);
+  session.total = picked.length;
+  picked.forEach(v=>{
+    const wantSyn = v.s && (!v.a || Math.random()<0.5);
+    const ans = wantSyn ? v.s : v.a;
+    const distractors = pickSynAntDistractors(v, ans, 3);
+    const opts = shuffle([ans, ...distractors]);
+    session.questions.push({type:'synant', target:v, mode:wantSyn?'syn':'ant', opts, ans});
+  });
+}
+
+function pickSynAntDistractors(target, ans, n){
+  // Pick from VOCAB and from other words' s/a fields, avoiding answer and target
+  const allCandidates = new Set();
+  VOCAB.forEach(v=>{
+    if(v.w!==target.w && v.w!==ans) allCandidates.add(v.w);
+    if(v.s && v.s!==ans && v.s!==target.w) allCandidates.add(v.s);
+    if(v.a && v.a!==ans && v.a!==target.w) allCandidates.add(v.a);
+  });
+  return shuffle(Array.from(allCandidates)).slice(0,n);
+}
+
+function buildConfusedSession(){
+  const pairKeys = Object.keys(CONFUSED_NOTES);
+  const expanded = [];
+  pairKeys.forEach(k=>{
+    const [a,b] = k.split('|');
+    const va = VOCAB.find(v=>v.w===a);
+    const vb = VOCAB.find(v=>v.w===b);
+    if(va) expanded.push({target:va, partner:vb||{w:b,z:'',e:''}, key:k});
+    if(vb) expanded.push({target:vb, partner:va||{w:a,z:'',e:''}, key:k});
+  });
+  const picked = shuffle(expanded).slice(0, session.total);
+  session.total = picked.length;
+  picked.forEach(item=>{
+    const v = item.target;
+    const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\b","i"),"___");
+    const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
+    // Options: target word, partner word, plus 2 distractors
+    const partnerW = item.partner.w;
+    const extras = pickDistractorsForWord(v, 2).filter(x=>x!==partnerW).slice(0,2);
+    while(extras.length<2){
+      const r = VOCAB[Math.floor(Math.random()*VOCAB.length)].w;
+      if(r!==v.w && r!==partnerW && !extras.includes(r)) extras.push(r);
+    }
+    const opts = shuffle([v.w, partnerW, ...extras]);
+    session.questions.push({type:'confused', target:v, stem:finalStem, opts, ans:v.w, key:item.key, partner:item.partner});
+  });
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+/* --------------- Render question --------------- */
+function renderQuestion(){
+  if(session.idx >= session.total){
+    return renderDone();
+  }
+  const q = session.questions[session.idx];
+  if(q.type==='passage') return renderPassageQ(q);
+  if(q.type==='synant') return renderSynAntQ(q);
+  if(q.type==='confused') return renderConfusedQ(q);
+  if(q.type==='meaning') return renderMeaningQ(q);
+  return renderClozeQ(q);
+}
+
+function renderMeaningQ(q){
+  const app = document.getElementById('app');
+  const isExamMode = session.mode === 'exam';
+  app.innerHTML = `
+    <div class="practice">
+      ${renderPHead(isExamMode ? '考古題單字 · Exam Vocabulary' : '單字釋義 · Meaning')}
+      <div class="q-prompt">下列哪個中文最符合此單字的意思？</div>
+      <div class="q-target-row">
+        <button class="speak-btn" onclick="speak('${q.target.w}')" title="發音">▶</button>
+        <div class="q-target">${q.target.w}</div>
+      </div>
+      <div class="q-target-pos">${q.target.p}${q.target.src?'　·　'+q.target.src:''}</div>
+      <div class="opts" id="optsBox">
+        ${q.opts.map((o,i)=>`<button class="opt" data-w="${o.replace(/"/g,'&quot;')}" onclick="answerMeaning('${o.replace(/'/g,"\\'")}')">
+          <span class="letter">${"ABCD"[i]}</span><span class="word plain" style="font-family:var(--cn)">${o}</span>
+        </button>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="actions hidden" id="actions">
+        <button class="btn ghost" onclick="quitSession()">結束</button>
+        <button class="btn" onclick="nextQ()">下一題 →</button>
+      </div>
+    </div>
+  `;
+}
+
+function answerMeaning(choice){
+  const q = session.questions[session.idx];
+  const isCorrect = choice === q.ans;
+  document.querySelectorAll('#optsBox .opt').forEach(btn=>{
+    btn.disabled = true;
+    if(btn.dataset.w === q.ans) btn.classList.add('correct');
+    else if(btn.dataset.w === choice && !isCorrect) btn.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  let html = '';
+  if(isCorrect){
+    html += `<div class="fb-tag">正確 · Correct</div>`;
+    html += `<div><span class="ans-word">${q.target.w}</span> · <span class="ans-zh">${q.target.z}</span></div>`;
+  } else {
+    html += `<div class="fb-tag">再想想 · Review</div>`;
+    html += `<div><span class="ans-word">${q.target.w}</span> 的正解：<span class="ans-zh">${q.target.z}</span></div>`;
+  }
+  if(q.target.e){
+    const re = new RegExp("\\b("+escapeReg(q.target.w)+"\\w*)\\b","i");
+    html += `<div class="ex">${q.target.e.replace(re,"<u>$1</u>")}</div>`;
+  }
+  if(q.target.src){
+    html += `<div class="src-tag">📋 曾出現於 ${q.target.src.split('/').join('、')}</div>`;
+  }
+  fb.innerHTML = html;
+  fb.classList.add('show', isCorrect?'ok':'ng');
+  document.getElementById('actions').classList.remove('hidden');
+  recordResult(q.target.w, isCorrect);
+  bumpToday(isCorrect);
+  if(isCorrect) session.correct++; else session.wrong++;
+  if(parseInt(settings.autoSpeak)){
+    setTimeout(()=>speak(q.target.w), 350);
+  }
+}
+
+function renderClozeQ(q){
+  const app = document.getElementById('app');
+  const stem = q.stem.replace('___',`<span class="blank" id="blankSlot">______</span>`);
+  app.innerHTML = `
+    <div class="practice">
+      ${renderPHead('句子填空 · Sentence Cloze')}
+      <div class="q-prompt">選出最適合填入空格的字</div>
+      <div class="q-stem">${stem}</div>
+      <div class="opts" id="optsBox">
+        ${q.opts.map((o,i)=>`<button class="opt" data-w="${o}" onclick="answer('${o}')">
+          <span class="letter">${"ABCD"[i]}</span><span class="word">${o}</span>
+        </button>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="actions hidden" id="actions">
+        <button class="btn ghost" onclick="quitSession()">結束</button>
+        <button class="btn" onclick="nextQ()">下一題 →</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderConfusedQ(q){
+  const app = document.getElementById('app');
+  const stem = q.stem.replace('___',`<span class="blank" id="blankSlot">______</span>`);
+  app.innerHTML = `
+    <div class="practice">
+      ${renderPHead('混淆字辨義 · Confused Pairs')}
+      <div class="q-prompt">下列哪個字最符合句意？</div>
+      <div class="q-stem">${stem}</div>
+      <div class="opts" id="optsBox">
+        ${q.opts.map((o,i)=>`<button class="opt" data-w="${o}" onclick="answer('${o}')">
+          <span class="letter">${"ABCD"[i]}</span><span class="word">${o}</span>
+        </button>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="actions hidden" id="actions">
+        <button class="btn ghost" onclick="quitSession()">結束</button>
+        <button class="btn" onclick="nextQ()">下一題 →</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderSynAntQ(q){
+  const app = document.getElementById('app');
+  const label = q.mode==='syn' ? '相同（同義）' : '相反（反義）';
+  const labelEn = q.mode==='syn' ? 'Synonym' : 'Antonym';
+  app.innerHTML = `
+    <div class="practice">
+      ${renderPHead('同義 / 反義字 · '+labelEn)}
+      <div class="q-prompt">下列哪個字與目標字意思<strong style="color:var(--ochre)">${label}</strong>？</div>
+      <div class="q-target-row">
+        <button class="speak-btn" onclick="speak('${q.target.w}')" title="發音">▶</button>
+        <div class="q-target">${q.target.w}</div>
+      </div>
+      <div class="q-target-pos">${q.target.p}　·　${q.target.z}</div>
+      <div class="opts" id="optsBox">
+        ${q.opts.map((o,i)=>`<button class="opt" data-w="${o}" onclick="answer('${o}')">
+          <span class="letter">${"ABCD"[i]}</span><span class="word">${o}</span>
+        </button>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="actions hidden" id="actions">
+        <button class="btn ghost" onclick="quitSession()">結束</button>
+        <button class="btn" onclick="nextQ()">下一題 →</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderPassageQ(q){
+  const app = document.getElementById('app');
+  const p = q.passage;
+  // Render passage with all blanks
+  let html = p.text;
+  p.blanks.forEach(b=>{
+    html = html.replace(`[[${b.idx}]]`,`<span class="blank" data-blank="${b.idx}" id="b${b.idx}">⟪${b.idx}⟫</span>`);
+  });
+  // Render each blank's options below
+  app.innerHTML = `
+    <div class="practice">
+      ${renderPHead('段落填空 · Passage Cloze')}
+      <div class="q-prompt"><strong style="font-style:italic;font-family:var(--serif);font-size:16px">${p.title}</strong></div>
+      <div class="q-stem passage" id="passageText">${html}</div>
+      <div id="passageBlanks"></div>
+      <div class="feedback" id="fb"></div>
+      <div class="actions hidden" id="actions">
+        <button class="btn ghost" onclick="quitSession()">結束</button>
+        <button class="btn" onclick="nextQ()">下一段 →</button>
+      </div>
+    </div>
+  `;
+  renderPassageBlanks(q, 0);
+}
+
+function renderPassageBlanks(q, currentIdx){
+  const p = q.passage;
+  const wrap = document.getElementById('passageBlanks');
+  if(!q.userAnswers) q.userAnswers = {};
+  if(currentIdx >= p.blanks.length){
+    // All answered, show final feedback
+    return finishPassage(q);
+  }
+  const b = p.blanks[currentIdx];
+  // Highlight current blank
+  document.querySelectorAll('#passageText .blank').forEach(el=>{
+    el.style.background = '';
+    el.style.color = '';
+  });
+  const cur = document.getElementById('b'+b.idx);
+  if(cur){
+    cur.style.background='rgba(168,107,42,.18)';
+    cur.style.color='var(--ochre-deep)';
+    cur.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  wrap.innerHTML = `
+    <div class="q-prompt" style="margin-top:14px">空格 ⟪${b.idx}⟫ — 共 ${p.blanks.length} 格中的第 ${currentIdx+1} 格</div>
+    <div class="opts" id="optsBox">
+      ${shuffle(b.pool.slice()).map((o,i)=>`<button class="opt" data-w="${o}" onclick="answerPassageBlank('${o}',${currentIdx})">
+        <span class="letter">${"ABCD"[i]}</span><span class="word">${o}</span>
+      </button>`).join('')}
+    </div>
+  `;
+}
+
+function answerPassageBlank(choice, blankIdx){
+  const q = session.questions[session.idx];
+  const p = q.passage;
+  const b = p.blanks[blankIdx];
+  q.userAnswers[b.idx] = choice;
+  const isCorrect = choice === b.ans;
+  // Update DOM blank
+  const cur = document.getElementById('b'+b.idx);
+  if(cur){
+    cur.textContent = choice;
+    cur.classList.add('filled');
+    cur.style.background='';
+    if(!isCorrect){
+      cur.classList.add('wrong');
+      cur.title = '正解: ' + b.ans;
+    }
+  }
+  // Mark options
+  document.querySelectorAll('#optsBox .opt').forEach(btn=>{
+    btn.disabled = true;
+    if(btn.dataset.w === b.ans) btn.classList.add('correct');
+    else if(btn.dataset.w === choice && !isCorrect) btn.classList.add('wrong');
+  });
+  // Record stat against the answer's word if it exists in vocab
+  const targetVocab = VOCAB.find(v=>v.w===b.ans);
+  if(targetVocab) recordResult(b.ans, isCorrect);
+  bumpToday(isCorrect);
+  if(isCorrect) session.correct++; else session.wrong++;
+  setTimeout(()=>renderPassageBlanks(q, blankIdx+1), 700);
+}
+
+function finishPassage(q){
+  const p = q.passage;
+  const wrap = document.getElementById('passageBlanks');
+  let correctCount = 0;
+  p.blanks.forEach(b=>{ if(q.userAnswers[b.idx]===b.ans) correctCount++; });
+  // Show all correct answers in passage
+  document.querySelectorAll('#passageText .blank').forEach(el=>{
+    el.style.background='';
+  });
+  wrap.innerHTML = `
+    <div class="feedback ${correctCount===p.blanks.length?'ok':'ng'} show" style="display:block">
+      <div class="fb-tag">${correctCount===p.blanks.length?'全對 ✓':'答對 '+correctCount+' / '+p.blanks.length}</div>
+      <div>各空格正解：${p.blanks.map(b=>`<span class="ans-word">${b.ans}</span>`).join('、')}</div>
+    </div>
+  `;
+  document.getElementById('actions').classList.remove('hidden');
+}
+
+function renderPHead(title){
+  return `<div class="p-head">
+    <div class="p-mode">${title}</div>
+    <div class="p-prog">${session.idx+1} / ${session.total}</div>
+    <button class="p-close" onclick="quitSession()" title="返回">✕</button>
+  </div>`;
+}
+
+function answer(choice){
+  const q = session.questions[session.idx];
+  const isCorrect = choice === q.ans;
+  // Lock options
+  document.querySelectorAll('#optsBox .opt').forEach(btn=>{
+    btn.disabled = true;
+    if(btn.dataset.w === q.ans) btn.classList.add('correct');
+    else if(btn.dataset.w === choice && !isCorrect) btn.classList.add('wrong');
+  });
+  // Update blank in stem
+  const slot = document.getElementById('blankSlot');
+  if(slot){
+    slot.textContent = choice;
+    slot.classList.add('filled');
+    if(!isCorrect) slot.classList.add('wrong');
+  }
+  // Build feedback
+  const fb = document.getElementById('fb');
+  const target = q.target;
+  const ansVocab = VOCAB.find(v=>v.w===q.ans) || target;
+  let html = '';
+  if(isCorrect){
+    html += `<div class="fb-tag">正確 · Correct</div>`;
+    html += `<div><span class="ans-word">${q.ans}</span> · <span class="ans-zh">${ansVocab.z||''}</span></div>`;
+  }else{
+    html += `<div class="fb-tag">再想想 · Review</div>`;
+    html += `<div>正解：<span class="ans-word">${q.ans}</span> · <span class="ans-zh">${ansVocab.z||''}</span></div>`;
+  }
+  // Add example sentence with target highlighted
+  if(ansVocab && ansVocab.e){
+    const re = new RegExp("\\b("+escapeReg(ansVocab.w)+"\\w*)\\b","i");
+    html += `<div class="ex">${ansVocab.e.replace(re,"<u>$1</u>")}</div>`;
+  }
+  // Show exam source tag if applicable
+  if(ansVocab && ansVocab.src){
+    html += `<div class="src-tag">📋 曾出現於 ${ansVocab.src.split('/').join('、')}</div>`;
+  }
+  // For confused-mode, add the comparison note
+  if(q.type==='confused' && q.key && CONFUSED_NOTES[q.key]){
+    html += `<div class="conf-note">${CONFUSED_NOTES[q.key]}</div>`;
+  }
+  // For synant, briefly explain
+  if(q.type==='synant'){
+    const partnerVocab = VOCAB.find(v=>v.w===q.ans);
+    if(partnerVocab && partnerVocab.z){
+      html += `<div class="conf-note">${q.mode==='syn'?'同義字':'反義字'} <span class="ans-word">${q.ans}</span> 意為 ${partnerVocab.z}</div>`;
+    }
+  }
+  fb.innerHTML = html;
+  fb.classList.add('show', isCorrect?'ok':'ng');
+  document.getElementById('actions').classList.remove('hidden');
+  recordResult(target.w, isCorrect);
+  bumpToday(isCorrect);
+  if(isCorrect) session.correct++; else session.wrong++;
+  // Auto-speak the correct answer
+  if(parseInt(settings.autoSpeak)){
+    setTimeout(()=>speak(q.ans), 350);
+  }
+}
+
+function nextQ(){
+  session.idx++;
+  renderQuestion();
+}
+
+function renderDone(){
+  const acc = session.correct + session.wrong > 0
+    ? Math.round(100*session.correct/(session.correct+session.wrong)) : 0;
+  let msg = '';
+  if(acc>=90) msg = '表現優異，繼續保持。';
+  else if(acc>=70) msg = '熟練度穩定。可重複練習答錯的字加強鞏固。';
+  else if(acc>=50) msg = '已掌握部分字彙，建議檢視「需要加強的字」清單。';
+  else msg = '別氣餒，這些字本來就難。從錯題回頭看例句，會記得更牢。';
+  document.getElementById('app').innerHTML = `
+    <header class="masthead">
+      <div class="eyebrow">SESSION COMPLETE</div>
+      <h1 class="title">這次練習結束<span class="cn">本回合結果</span></h1>
+    </header>
+    <div class="done">
+      <div class="big-num">${session.correct}<span class="slash"> / </span>${session.correct+session.wrong}</div>
+      <div class="ratio-l">正確率 ${acc}%</div>
+      <div class="msg">${msg}</div>
+      <div class="actions">
+        <button class="btn ghost" onclick="renderHome()">回到首頁</button>
+        <button class="btn" onclick="startMode('${session.mode}')">再來一回 →</button>
+      </div>
+    </div>
+  `;
+  session = null;
+}
+
+function quitSession(){
+  if(session && session.idx>0){
+    if(!confirm('要結束目前練習回到首頁嗎？')) return;
+  }
+  session = null;
+  renderHome();
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function openSettings(){
+  document.getElementById('setDaily').value = settings.dailyTarget;
+  document.getElementById('setRate').value = settings.speechRate;
+  document.getElementById('setAutoSpeak').value = settings.autoSpeak;
+  document.getElementById('settingsModal').classList.add('show');
+}
+function closeSettings(){
+  settings.dailyTarget = Math.min(100, Math.max(5, parseInt(document.getElementById('setDaily').value)||20));
+  settings.speechRate = parseFloat(document.getElementById('setRate').value)||0.85;
+  settings.autoSpeak = parseInt(document.getElementById('setAutoSpeak').value)||0;
+  saveSettings(settings);
+  document.getElementById('settingsModal').classList.remove('show');
+  renderHome();
+}
+function resetAll(){
+  if(!confirm('確定要清除所有學習進度？此動作無法復原。')) return;
+  localStorage.removeItem(STORE_KEY);
+  store = loadStore();
+  document.getElementById('settingsModal').classList.remove('show');
+  renderHome();
+}
+function exportProgress(){
+  const data = JSON.stringify({store, settings, exportedAt:new Date().toISOString()}, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '後中醫單字學習進度_'+todayKey()+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+function importProgress(){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e=>{
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{
+        const d = JSON.parse(r.result);
+        if(d.store) {store = d.store; saveStore(store);}
+        if(d.settings) {settings = Object.assign({},DEFAULT_SETTINGS,d.settings); saveSettings(settings);}
+        alert('進度匯入成功');
+        renderHome();
+      }catch(err){ alert('檔案格式錯誤：'+err.message); }
+    };
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+/* Boot */
+renderHome();
+</script>
+</body>
+</html>
