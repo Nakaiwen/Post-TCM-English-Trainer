@@ -299,6 +299,25 @@ h1.title .cn{
 }
 .speak-btn:hover{background:var(--bg-soft);border-color:var(--ochre)}
 .speak-btn:active{transform:scale(.95)}
+/* Small inline speak button for use within text */
+.speak-btn-mini{
+  background:none;
+  border:1px solid var(--line);
+  color:var(--ochre);
+  width:22px;height:22px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:9px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  vertical-align:middle;
+  margin:0 2px;
+  padding:0;
+  transition:all .15s;
+}
+.speak-btn-mini:hover{background:var(--bg-soft);border-color:var(--ochre);color:var(--ochre-deep)}
+.speak-btn-mini:active{transform:scale(.92)}
 
 /* --- Options --- */
 .opts{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
@@ -410,6 +429,62 @@ h1.title .cn{
   text-decoration:none;
   background:linear-gradient(transparent 60%,rgba(168,107,42,.25) 0);
   padding:0 2px;
+}
+.feedback .root-tag{
+  margin-top:6px;
+  font-family:var(--cn);
+  font-size:12.5px;
+  color:var(--sage);
+  letter-spacing:.05em;
+}
+.feedback .root-tag em{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:600;
+  color:var(--sage);
+}
+.root-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+  gap:10px;
+  margin-bottom:24px;
+}
+.root-card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:14px 12px 12px;
+  text-align:left;
+  cursor:pointer;
+  transition:all .15s ease;
+  font:inherit;
+  color:inherit;
+}
+.root-card:hover{
+  border-color:var(--sage);
+  background:#f0e9d8;
+  transform:translateY(-1px);
+}
+.root-card .root-name{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:600;
+  font-size:18px;
+  color:var(--sage);
+  margin-bottom:2px;
+}
+.root-card .root-gloss{
+  font-family:var(--serif);
+  font-size:12px;
+  color:var(--ink-mute);
+  font-style:italic;
+  margin-bottom:6px;
+  min-height:1.2em;
+}
+.root-card .root-count{
+  font-family:var(--mono);
+  font-size:10.5px;
+  color:var(--ochre);
+  letter-spacing:.05em;
 }
 .feedback .src-tag{
   margin-top:10px;
@@ -646,11 +721,23 @@ footer.foot em{font-style:normal;color:var(--ochre)}
       </select>
     </div>
     <div class="setting-row">
+      <label>發音腔調</label>
+      <select id="setAccent">
+        <option value="en-US">美式 American</option>
+        <option value="en-GB">英式 British</option>
+        <option value="en-AU">澳洲 Australian</option>
+      </select>
+    </div>
+    <div class="setting-row">
       <label>每題完成後自動讀音</label>
       <select id="setAutoSpeak">
         <option value="1">開啟</option>
         <option value="0">關閉</option>
       </select>
+    </div>
+    <div class="setting-row">
+      <label>試聽當前語音</label>
+      <button class="speak-btn" onclick="testVoice()" title="試聽">▶</button>
     </div>
     <div class="setting-row">
       <label>清除所有學習進度</label>
@@ -1194,10 +1281,10 @@ const VOCAB = [
 {w:"zeitgeist",p:"n.",z:"時代精神",e:"\"Goblinmode\" wasseen as pressure. Thecompany's ethos",src:"中國醫112",th:"社會/化"},
 {w:"ethos",p:"n.",z:"精神；理念",e:"Is builton innovatio n and patient- centriccare.",src:"中國醫112",th:"哲學社會"},
 {w:"barometer",p:"n.",z:"氣壓計；喻指標",e:"",src:"中國醫112",th:"學術通"},
-{w:"aphasia",p:"n.",z:"失語症",e:"Aphasiais an impairment of language, affecting the production or comprehensionofspeechand the ability toread orwrite. ( manipulation in",src:"中國醫112",th:"醫學"},
+{w:"aphasia",p:"n.",z:"失語症",e:"Aphasiais an impairment of language, affecting the production or comprehensionofspeechand the ability toread orwrite. ( manipulation in",src:"中國醫112",th:"醫學",root:"fab"},
 {w:"gaslighting",p:"n.",z:"煤氣燈效操縱",e:"Which apersonseeks tomake avictim questiontheirown reality.",src:"中國醫112",th:"理/化"},
 {w:"permacrisis",p:"n.",z:"永久危機",e:"",src:"中國醫112",th:"政治/化"},
-{w:"heterogeneous",p:"adj.",z:"異質的；由不同部",e:"The study's difficult. The new",src:"中國醫112",th:"醫學研究"},
+{w:"heterogeneous",p:"adj.",z:"異質的；由不同部",e:"The study's difficult. The new",src:"中國醫112",th:"醫學研究",root:"gen"},
 {w:"triggered",p:"v.(past)",z:"觸發；引起",e:"Policy triggered a widespreadpublic backlash.",src:"中國醫111",th:"醫學通"},
 {w:"pummeled",p:"v.(past)",z:"重擊；嚴重打擊",e:"",src:"中國醫111",th:"通/衝擊"},
 {w:"synoptic",p:"adj.",z:"概要的；綜觀的提防的",e:"Synopticreviewof the literature on neuropla sticity. preliminary data. The constant",src:"中國醫111",th:"學術"},
@@ -1217,16 +1304,16 @@ const VOCAB = [
 {w:"analogous",p:"adj.",z:"類似的；可類⽐的",e:"Arms ofahuman, sharingacommon evolution ary origin.",src:"中國醫110",th:"學術/物"},
 {w:"mastery",p:"n.",z:"精通；掌握",e:"",src:"中國醫110",th:"語/學"},
 {w:"disparate",p:"adj.",z:"截然不同的",e:"Disparate findingsfrom cognitiv scienceand sociology.",src:"中國醫110",th:"學術"},
-{w:"propensity",p:"n.",z:"不良傾向；習性",e:"",src:"中國醫110",th:"理學"},
+{w:"propensity",p:"n.",z:"不良傾向；習性",e:"",src:"中國醫110",th:"理學",root:"pend"},
 {w:"paradox",p:"n.",z:"悖論；似是⽽⾮的⽭盾",e:"We rationall y knowdeath isfinal, yet intuitivel y reject extinctio n.",src:"中國醫110",th:"哲學"},
 {w:"exasperating",p:"adj.",z:"令⼈惱怒的；使",e:"Atinglyslow recoverytestedthe patience.",src:"中國醫110",th:"理學"},
 {w:"ontology",p:"n.",z:"本體論；存在論",e:"An emergent ontologyratherthan astableone.",src:"中國醫110",th:"哲學"},
 {w:"induce",p:"v.",z:"誘導；引起",e:"",src:"中國醫109",th:"醫學通"},
 {w:"appraise",p:"v.",z:"評估；鑑定",e:"Term efficacyandsafety ofthe proposed treatment.",src:"中國醫109",th:"學術商業"},
 {w:"Morpheus",p:"n.",z:"摩⽿甫斯神」",e:"Enervating day, he wassoon inthe armsof Morpheus.",src:"中國醫109",th:"化"},
-{w:"infrastructure",p:"n.",z:"基礎設施",e:"Thestudyfound population. The filmwas a gritty,",src:"中國醫109",th:"社會學經濟"},
+{w:"infrastructure",p:"n.",z:"基礎設施",e:"Thestudyfound population. The filmwas a gritty,",src:"中國醫109",th:"社會學經濟",root:"struct"},
 {w:"gritty",p:"adj.",z:"堅韌不拔指粗糙的、寫實的",e:"Unflinchi ng portrayal of urban povertyand resilienc e.",src:"中國醫109",th:"化態度"},
-{w:"spectrum",p:"n.",z:"光譜；範圍",e:"",src:"中國醫109",th:"學術科學"},
+{w:"spectrum",p:"n.",z:"光譜；範圍",e:"",src:"中國醫109",th:"學術科學",root:"spect"},
 {w:"spontaneously",p:"adv.",z:"⾃發地；⾃然地",e:"",src:"中國醫109",th:"醫學/物"},
 {w:"exemplar",p:"n.",z:"範例；典型",e:"Readingis a classic exemplar of phonological recoding.",src:"中國醫109",th:"學術"},
 {w:"prevaricates",p:"v.",z:"閃爍其詞；⽀吾其詞",e:" 2025 Q4!  felt immediately.",src:"中國醫109",th:"政治態度"},
@@ -1257,11 +1344,11 @@ const VOCAB = [
 {w:"regulates",p:"v.",z:"調節；控管",e:"Part ofthe brainthat regulates body temperature and hunger.",src:"中國醫106",th:"醫學/物"},
 {w:"unsubstantiated",p:"adj.",z:"未經證實的；無事實根據的",e:"",src:"中國醫106",th:"學術法律"},
 {w:"disembodied",p:"adj.",z:"無實體的；脫離⾁體的",e:"Presence, offering guidance withoutany physicalform.  AI )",src:"中國醫106",th:"科技哲學"},
-{w:"belligerent",p:"adj.",z:"好⾾的；好戰的",e:"",src:"中國醫106",th:"態度"},
+{w:"belligerent",p:"adj.",z:"好⾾的；好戰的",e:"",src:"中國醫106",th:"態度",root:"bel"},
 {w:"upbraiding",p:"v.(pres.",z:"責罵；訓.斥",e:"Heard upbraiding theinternfor aminor procedural error.",src:"中國醫106",th:"態度"},
 {w:"elucidate",p:"v.",z:"闡明；說明",e:"",src:"中國醫106",th:"學術"},
 {w:"hazard",p:"n.",z:"⾵險；危害",e:"Significa ntly increases the riskof lung cancer.",src:"中國醫106",th:"醫學環境"},
-{w:"nascent",p:"adj.",z:"新⽣的；初期的",e:"",src:"中國醫106",th:"科技學術"},
+{w:"nascent",p:"adj.",z:"新⽣的；初期的",e:"",src:"中國醫106",th:"科技學術",root:"nat"},
 {w:"idiosyncraticnded",p:"adj.",z:"獨特的；怪異的惡化",e:"Language has itsown idiosyncratics and syntax. publichealth emergency. Treatinginfantpain is a dauntingtask for",src:"中國醫106",th:"學術"},
 {w:"inflammatory",p:"adj.",z:"炎症的；發炎的",e:"Anti- inflammatorycompounds. )  Q15 inflammable ) rapidly. In TCM,",src:"義守114",th:"醫學陷阱"},
 {w:"pungent",p:"adj.",z:"味道刺鼻的；⾟辣的",e:"Garlic is classifie d as a pungentherbto dispersecold. s. The new digital platform",src:"義守114",th:"醫學"},
@@ -1278,6 +1365,407 @@ const VOCAB = [
 {w:"immerse",p:"v.",z:"...使沉浸",e:"Learn the language, youmust immerse yourselfin the culture. Elderly patients",src:"義守112",th:"通/學術"},
 {w:"susceptible (to)",p:"adj.",z:"...易受影響的",e:"Are particula rly susceptible to complicationsfrom theflu. The committee",src:"義守111",th:"醫學"},
 {w:"exhaustive",p:"adj.",z:"詳盡的；徹底的",e:"Conducted an exhaustivereviewall available data.",src:"義守111",th:"學術"},
+/* --- Root-word vocabulary: 50+ Latin/Greek roots, 400 entries from cram-school handout p.201-258 --- */
+{w:"fraction",p:"n.",z:"分數，小數，小部分",e:"The value of pi is an infinite fraction.",root:"fract"},
+{w:"fracture",p:"n./v.",z:"破裂，斷裂",e:"The man suffered multiple bone fractures in the accident.",root:"fract"},
+{w:"diffract",p:"v.",z:"分光，衍射",e:"The colors of the rainbow are the result of water droplets diffracting light.",root:"fract"},
+{w:"fragment",p:"n./v.",z:"碎片；破碎",e:"Fragments of the broken vase covered the floor.",root:"fract"},
+{w:"fragile",p:"a.",z:"脆弱的",e:"The sign says \"Fragile. Handle with care.\"",root:"fract"},
+{w:"frail",p:"a.",z:"虛弱，衰弱",e:"The patient is still too frail to walk.",root:"fract"},
+{w:"infringe",p:"v.",z:"侵犯，違反",e:"This product clearly infringes a patent held by our company.",root:"fract"},
+{w:"fractious",p:"a.",z:"易怒的，難控制的",e:"The fractious protesters may turn into a mob any moment.",root:"fract"},
+{w:"disrupt",p:"v.",z:"打斷，破壞",e:"The negotiation was disrupted when protestors started throwing eggs.",root:"rupt"},
+{w:"abrupt",p:"a.",z:"突然的",e:"You should avoid any abrupt movements on the little boat.",root:"rupt"},
+{w:"bankruptcy",p:"n.",z:"破產",e:"The company went from insolvency to bankruptcy.",root:"rupt"},
+{w:"corruption",p:"n.",z:"貪污，腐敗",e:"The biggest problem now is widespread corruption among government officials.",root:"rupt"},
+{w:"erupt",p:"v.",z:"爆發",e:"Violence erupted when the pro-life and pro-choice crowds came to the same square.",root:"rupt"},
+{w:"rupture",p:"n./v.",z:"（使）破裂",e:"The weight-lifter had a muscle rupture.",root:"rupt"},
+{w:"destroy",p:"v.",z:"毀滅，破壞",e:"An earthquake destroyed most of the city.",root:"struct"},
+{w:"construction",p:"n.",z:"建造，建設",e:"Construction ahead. Please detour.",root:"struct"},
+{w:"deconstruct",p:"v.",z:"解構",e:"The feminist article deconstructs the myth that men and women are born different.",root:"struct"},
+{w:"instruction",p:"n.",z:"指示，指導，說明",e:"Read the instructions carefully before using the machine.",root:"struct"},
+{w:"instrument",p:"n.",z:"工具，儀器",e:"Do you play any musical instruments?",root:"struct"},
+{w:"reconstruct",p:"v.",z:"重建",e:"The investigators tried to reconstruct the crime scene.",root:"struct"},
+{w:"misconstrue",p:"v.",z:"誤解，研判錯誤",e:"Do not misconstrue my caution as cowardice.",root:"struct"},
+{w:"obstruct",p:"v.",z:"阻礙",e:"The car was towed away because it was obstructing traffic.",root:"struct"},
+{w:"superstructure",p:"n.",z:"上層建築",e:"The superstructure of the building is completely made of steel and glass.",root:"struct"},
+{w:"rebellious",p:"a.",z:"反叛的，叛逆的",e:"The rebellious troops are marching on the capital.",root:"bel"},
+{w:"bellicose",p:"a.",z:"好鬥的，好戰的",e:"Those bellicose hockey players always seem to be fighting.",root:"bel"},
+{w:"conflict",p:"n./v.",z:"衝突",e:"Artists often come into conflict with politicians.",root:"flict"},
+{w:"inflict",p:"v.",z:"給予（打擊），施加（懲罰）",e:"The bullet was designed to inflict pain only.",root:"flict"},
+{w:"afflict",p:"v.",z:"折磨",e:"The old woman was afflicted with arthritis.",root:"flict"},
+{w:"profligate",p:"a./n.",z:"放蕩的，浪費的（人）",e:"She is well-known for her profligate spending habits.",root:"flict"},
+{w:"innocuous",p:"a.",z:"無害的，不得罪人的",e:"He told a few innocuous jokes.",root:"noc"},
+{w:"noxious",p:"a.",z:"有害的，有毒的",e:"The factory was fined for discharging noxious effluents into the river.",root:"noc"},
+{w:"obnoxious",p:"a.",z:"令人厭惡的，粗魯無禮的",e:"When she's in a bad mood she's obnoxious to everyone.",root:"noc"},
+{w:"pernicious",p:"a.",z:"致命的，惡性的",e:"She thinks television has a pernicious influence on our children.",root:"noc"},
+{w:"candid",p:"a.",z:"坦白的，坦誠的",e:"He was quite candid about his past.",root:"cand"},
+{w:"incandescent",p:"a.",z:"白熱的，燦爛的",e:"The poet laureate captivated the audience with his incandescent wit.",root:"cand"},
+{w:"incendiary",p:"a./n.",z:"燃燒的，煽動的；縱火犯",e:"The plane dropped an incendiary bomb on the city.",root:"cand"},
+{w:"incensed",p:"a.",z:"被激怒的",e:"She was incensed about the billionaires monopolizing all the perks.",root:"cand"},
+{w:"incentive",p:"n./a.",z:"刺激，誘因；激勵的",e:"The government has imposed special tax incentives to encourage spending.",root:"cand"},
+{w:"candidate",p:"n.",z:"候選人，求職者",e:"Which candidate are you going to vote for?",root:"cand"},
+{w:"convict",p:"v./n.",z:"證明有罪，判決有罪；罪犯，囚犯",e:"The man was convicted of burglary and sent to jail.",root:"vict"},
+{w:"convince",p:"v.",z:"說服",e:"The lawyer convinced the jury that his client was innocent.",root:"vict"},
+{w:"evict",p:"v.",z:"逐出，驅逐",e:"The landlord had the tenant evicted because the latter never paid any rent.",root:"vict"},
+{w:"invincible",p:"a.",z:"無敵的",e:"Spain sent an invincible fleet to conquer England, but the fleet perished in a storm.",root:"vict"},
+{w:"vanquish",p:"v.",z:"征服，打敗",e:"We shall vanquish the foe.",root:"vict"},
+{w:"province",p:"n.",z:"省",e:"The Republic is divided into 20 provinces.",root:"vict"},
+{w:"vindicate",p:"v.",z:"證明正確，證明無罪",e:"The investigation vindicated her complaint about the newspaper.",root:"vict"},
+{w:"vindictive",p:"a.",z:"有報復心的",e:"In the movie, a lawyer's family is threatened by a vindictive former prisoner.",root:"vict"},
+{w:"registration",p:"n.",z:"註冊，登記",e:"The man took down the registration number of the car.",root:"reg"},
+{w:"regal",p:"a.",z:"帝王的，莊嚴的",e:"The lion is called the king of beasts because of its regal look.",root:"reg"},
+{w:"royalty",p:"n.",z:"皇族成員，專利金，版稅",e:"Modern novelists live on royalties.",root:"reg"},
+{w:"deregulation",p:"n.",z:"開放，解除管制",e:"Deregulation of air traffic resulted in lower fares but a higher incidence of delays and crashes.",root:"reg"},
+{w:"regime",p:"n.",z:"政權，統治",e:"The autocrat's regime didn't last long.",root:"reg"},
+{w:"regimen",p:"n.",z:"養生法，訓練，管制",e:"He observes a daily exercise regimen strictly.",root:"reg"},
+{w:"reign",p:"n./v.",z:"統治",e:"Under Queen Elizabeth's reign, Britain became a mighty country.",root:"reg"},
+{w:"sovereignty",p:"n.",z:"主權",e:"Britain and Argentina fought a war over the sovereignty of the Falklands.",root:"reg"},
+{w:"dominate",p:"v.",z:"主宰，支配",e:"Operating systems of this company dominate the market.",root:"dom"},
+{w:"indomitable",p:"a.",z:"不屈不撓的",e:"The man's indomitable will helped him overcome all obstacles.",root:"dom"},
+{w:"domain",p:"n.",z:"領域，領土",e:"His is a respected name in the domain of science.",root:"dom"},
+{w:"domestic",p:"a./n.",z:"家庭的，國內的，馴養的；僕人，傭人",e:"Cattle and sheep are domestic animals.",root:"dom"},
+{w:"domesticate",p:"v.",z:"養馴，馴服",e:"Dogs have been domesticated for thousands of years.",root:"dom"},
+{w:"domineering",p:"a.",z:"盛氣凌人的",e:"He can never be happy with that domineering wife of his.",root:"dom"},
+{w:"desecrate",p:"v.",z:"褻瀆",e:"Hooligans desecrated the temple.",root:"sanct"},
+{w:"sacrosanct",p:"a.",z:"神聖不可侵犯的",e:"The tradition is regarded as sacrosanct.",root:"sanct"},
+{w:"sanction",p:"n./v.",z:"制裁，批准",e:"The UN imposed economic sanctions against nations harboring terrorism.",root:"sanct"},
+{w:"sanctity",p:"n.",z:"神聖性，不可侵犯性",e:"The sanctity of the elderly nun demands respect.",root:"sanct"},
+{w:"sanctuary",p:"n.",z:"聖地，庇護（所），避難（所）",e:"The refugees found sanctuary when they crossed the border.",root:"sanct"},
+{w:"autobiography",p:"n.",z:"自傳",e:"I like to read autobiographies of famous people.",root:"graph"},
+{w:"graphic",p:"a./n.",z:"生動的，圖像的；圖像，圖表",e:"He gave us a graphic description of his near-death experience.",root:"graph"},
+{w:"autograph",p:"n./v.",z:"簽名留念",e:"\"May I have your autograph?\" asked the fan of the superstar.",root:"graph"},
+{w:"bibliography",p:"n.",z:"書目",e:"You must add a bibliography to your research paper.",root:"graph"},
+{w:"diagram",p:"n.",z:"圖表，解說圖",e:"I couldn't understand the diagrams in this report.",root:"graph"},
+{w:"graffiti",p:"n.",z:"塗鴉（單數 graffito）",e:"A whole side of the building is covered with complicated graffiti.",root:"graph"},
+{w:"graft",p:"n./v.",z:"嫁接，移植",e:"He has had a skin graft on his badly burned arm.",root:"graph"},
+{w:"scribble",p:"v./n.",z:"潦草書寫",e:"He scribbled a note and left it on his friend's desk.",root:"scrib"},
+{w:"manuscript",p:"n.",z:"手稿",e:"The writer emailed the manuscript to her publisher.",root:"scrib"},
+{w:"inscribe",p:"v.",z:"刻，登記入冊",e:"The inside of the ring was inscribed with the initials of the owner.",root:"scrib"},
+{w:"nondescript",p:"a.",z:"難以形容的",e:"The witness could only say he saw a nondescript man in ordinary clothing.",root:"scrib"},
+{w:"prescription",p:"n.",z:"處方",e:"You need a doctor's prescription to buy this drug.",root:"scrib"},
+{w:"scripture",p:"n.",z:"經文",e:"The scholar has thoroughly studied the important scriptures of Christianity and Islam.",root:"scrib"},
+{w:"subscribe",p:"v.",z:"署名，訂閱，支持",e:"I subscribe to three different newspapers.",root:"scrib"},
+{w:"transcribe",p:"v.",z:"謄寫，轉錄，改編",e:"The secretary is transcribing the recording into typed text.",root:"scrib"},
+{w:"conscription",p:"n.",z:"徵兵（制）",e:"Ever since the war began he's been worried that the government will introduce conscription.",root:"scrib"},
+{w:"audit",p:"v./n.",z:"旁聽，查帳，審計",e:"Three accountants are auditing the accounts of the company.",root:"aud"},
+{w:"audition",p:"v./n.",z:"試鏡",e:"The actor is auditioning for a role in the new film.",root:"aud"},
+{w:"auditory",p:"a.",z:"聽覺的",e:"Cats have a highly developed auditory sense.",root:"aud"},
+{w:"inaudible",p:"a.",z:"聽不見的",e:"What he said was inaudible among the noises.",root:"aud"},
+{w:"diction",p:"n.",z:"措詞，用語",e:"Hemingway is known for his precise diction.",root:"dict"},
+{w:"addicted",p:"a.",z:"上癮的，有癮的",e:"The man was addicted to nicotine and found it impossible to quit.",root:"dict"},
+{w:"dedicate",p:"v.",z:"奉獻，投入",e:"The man has dedicated his whole life to education.",root:"dict"},
+{w:"predict",p:"v.",z:"預言，預測",e:"Astrologers predict all sorts of disasters, but few ever come true.",root:"dict"},
+{w:"predicament",p:"n.",z:"困境",e:"The Chairman is soliciting donations to solve the club's financial predicament.",root:"dict"},
+{w:"dictate",p:"v.",z:"命令，口授",e:"After the war, the victorious nation dictated the terms of peace.",root:"dict"},
+{w:"indict",p:"v.",z:"起訴，控告",e:"The man was indicted on murder charges.",root:"dict"},
+{w:"indicate",p:"v.",z:"顯示，表示",e:"Exploratory investigations have indicated large amounts of oil below the sea bed.",root:"dict"},
+{w:"contraindication",p:"n.",z:"禁忌症",e:"The experiment excluded persons with medical contraindications to exercise.",root:"dict"},
+{w:"malediction",p:"n.",z:"詛咒",e:"The old man heaped maledictions on his enemy.",root:"dict"},
+{w:"syndicate",p:"n./v.",z:"企業聯盟，報業聯盟",e:"The Oscars ceremony is syndicated to broadcasters worldwide.",root:"dict"},
+{w:"affable",p:"a.",z:"容易親近的，友善的",e:"The affable host mingled easily with the guests.",root:"fab"},
+{w:"prophetic",p:"a.",z:"預言性的，預示的",e:"You should heed the prophetic signs.",root:"fab"},
+{w:"fabulous",p:"a.",z:"驚人的，極好的",e:"You look absolutely fabulous in this dress.",root:"fab"},
+{w:"confabulation",p:"n.",z:"交談，閒談",e:"They were seen in close confabulation over a drink.",root:"fab"},
+{w:"profess",p:"v.",z:"宣稱",e:"She professes not to be interested in money.",root:"fab"},
+{w:"confess",p:"v.",z:"坦白，招供",e:"She confessed to her husband that she had sold her wedding ring.",root:"fab"},
+{w:"emphasize",p:"v.",z:"強調",e:"You can use italics to emphasize a word or phrase in a sentence.",root:"fab"},
+{w:"euphemism",p:"n.",z:"委婉的說法",e:"The army uses \"eliminate\" as a euphemism for \"kill.\"",root:"fab"},
+{w:"oratory",p:"n.",z:"演說術，雄辯",e:"He whipped the crowd up into a frenzy with his oratory.",root:"ora"},
+{w:"orifice",p:"n.",z:"開口，洞口",e:"The driver was bleeding from every orifice.",root:"ora"},
+{w:"inexorable",p:"a.",z:"不可阻擋的，毫不寬容的",e:"Aging is an inexorable process.",root:"ora"},
+{w:"chant",p:"n./v.",z:"歌頌，吟唱",e:"The hippies' favorite chant was \"Make love, not war!\"",root:"cant"},
+{w:"recant",p:"v.",z:"撤回，反悔",e:"Witnesses threatened to recant their testimonies.",root:"cant"},
+{w:"enchantment",p:"n.",z:"魔法，魅力",e:"I was enjoying the enchantment of a snowy field bathed in moonlight.",root:"cant"},
+{w:"colloquial",p:"a.",z:"口語的",e:"You should avoid colloquial expressions in formal writing.",root:"locu"},
+{w:"elocution",p:"n.",z:"演說術",e:"The art of elocution teaches you to be eloquent.",root:"locu"},
+{w:"magniloquent",p:"a.",z:"誇張的，說大話的",e:"I'm tired of your magniloquent boasts.",root:"locu"},
+{w:"logo",p:"n.",z:"商標",e:"The company logo was the work of a famous designer.",root:"log"},
+{w:"loquacious",p:"a.",z:"多話的",e:"The loquacious man went on for two hours without stop.",root:"locu"},
+{w:"prologue",p:"n.",z:"序",e:"In the prologue the author explains why he wrote the book.",root:"log"},
+{w:"geology",p:"n.",z:"地質學",e:"Geological evidence shows that this mountain was once under the sea.",root:"log"},
+{w:"anthropology",p:"n.",z:"人類學",e:"The professor of anthropology is conducting a project in the Amazon jungle.",root:"log"},
+{w:"meteorology",p:"n.",z:"氣象學",e:"The Central Weather Bureau does meteorological research.",root:"log"},
+{w:"neurology",p:"n.",z:"神經學",e:"Parkinson's and Alzheimer's are both neurological disorders.",root:"log"},
+{w:"sociology",p:"n.",z:"社會學",e:"The Chicago school of sociology is eminent in the field.",root:"log"},
+{w:"pathology",p:"n.",z:"病理學",e:"The pathologist conducted a postmortem to find out the cause of death.",root:"log"},
+{w:"physiology",p:"n.",z:"生理學",e:"A physiologist studies the human body, whereas a psychologist studies the human mind.",root:"log"},
+{w:"technology",p:"n.",z:"技術",e:"I am more interested in science and technology than in the humanities.",root:"log"},
+{w:"gynecologist",p:"n.",z:"婦科醫師",e:"Gynecologists and obstetricians specialize in caring for pregnant women.",root:"log"},
+{w:"oncology",p:"n.",z:"腫瘤科，腫瘤學",e:"Cancer research belongs to the field of oncology.",root:"log"},
+{w:"advocate",p:"v./n.",z:"倡議（者）",e:"This pacifist group advocates peace.",root:"voc"},
+{w:"evoke",p:"v.",z:"喚起，召喚",e:"The old photograph evokes memories of my school days.",root:"voc"},
+{w:"revoke",p:"v.",z:"撤回，撤銷",e:"The old man revoked his will and left all his money to charity.",root:"voc"},
+{w:"irrevocable",p:"a.",z:"無法挽回的",e:"The death of the great scientist was an irrevocable loss.",root:"voc"},
+{w:"provoke",p:"v.",z:"挑釁，激起",e:"Soaring prices have provoked widespread unease among the populace.",root:"voc"},
+{w:"vocation",p:"n.",z:"職業",e:"Teaching is my vocation.",root:"voc"},
+{w:"invoke",p:"v.",z:"祈求，召喚，援引（法條）",e:"The case falls under local jurisdiction, so the defense lawyer cannot invoke federal law.",root:"voc"},
+{w:"vociferous",p:"a.",z:"吵鬧的，喧嚷的",e:"Greenpeace is a small but vociferous organization.",root:"voc"},
+{w:"vocal",p:"a.",z:"聲音的，大聲表達意見的",e:"The man has been a very vocal critic of the ruling party.",root:"voc"},
+{w:"clamor",p:"n./v.",z:"吵鬧，喧嘩",e:"The people are clamoring for change.",root:"clam"},
+{w:"acclaim",p:"n./v.",z:"好評；叫好",e:"The artist is widely acclaimed for his innovative approach.",root:"clam"},
+{w:"claim",p:"v./n.",z:"聲明，主張，要求",e:"The man's claim of innocence was supported by an alibi.",root:"clam"},
+{w:"proclaim",p:"v.",z:"宣告",e:"After the South proclaimed independence, the Civil War broke out.",root:"clam"},
+{w:"reclaim",p:"v.",z:"開墾，回收",e:"This land has been reclaimed from the shallows by landfills.",root:"clam"},
+{w:"spectacle",p:"n.",z:"景象，奇觀",e:"It was quite a spectacle to see the old sow suckling a puppy.",root:"spect"},
+{w:"spectacles",p:"n.",z:"眼鏡",e:"These spectacles come with a steel rim.",root:"spect"},
+{w:"aspect",p:"n.",z:"方面，觀點，外觀",e:"After considering the venture from every possible aspect, they decided to proceed.",root:"spect"},
+{w:"expect",p:"v.",z:"期望",e:"What do you expect to gain from the experience?",root:"spect"},
+{w:"prospect",p:"n.",z:"展望，前景",e:"Economic prospects for the coming year are excellent.",root:"spect"},
+{w:"conspicuous",p:"a.",z:"突出的，顯著的",e:"The millionaire showed off his wealth through conspicuous consumption.",root:"spect"},
+{w:"introspection",p:"n.",z:"內省，反省",e:"Everyone needs a moment of introspection every day.",root:"spect"},
+{w:"retrospect",p:"n.",z:"回顧",e:"In retrospect, maybe we shouldn't have bought the house at that juncture.",root:"spect"},
+{w:"suspect",p:"v./n.",z:"懷疑，猜測；嫌疑犯",e:"The suspect of the murder was promptly prosecuted.",root:"spect"},
+{w:"despicable",p:"a.",z:"卑鄙的，可恥的",e:"There's nothing despicable about admitting your mistakes.",root:"spect"},
+{w:"inspector",p:"n.",z:"督察，探長",e:"The police inspector is in charge of the murder case.",root:"spect"},
+{w:"perspective",p:"n./a.",z:"觀點，角度，透視法（的）",e:"The scholar examined the historic event from an economic perspective.",root:"spect"},
+{w:"spectator",p:"n.",z:"旁觀者，觀眾",e:"The spectators went wild when the batter hit a homerun.",root:"spect"},
+{w:"speculate",p:"v.",z:"猜測，投機",e:"I can only speculate on his motives for stealing the money.",root:"spect"},
+{w:"respite",p:"n.",z:"暫緩執行，緩解",e:"Their teacher was away, so the children had a day's respite before their compositions were due.",root:"spect"},
+{w:"specimen",p:"n.",z:"樣品，標本",e:"China shared its specimens of moon rock with several countries.",root:"spect"},
+{w:"specious",p:"a.",z:"看似有理的",e:"These specious allegations are quite unfounded.",root:"spect"},
+{w:"evidence",p:"n./v.",z:"證據；證明，顯示",e:"The suspect was released because there was not enough evidence.",root:"vid"},
+{w:"supervisor",p:"n.",z:"上司，管理者",e:"My supervisor has agreed to write a letter of recommendation for me.",root:"vid"},
+{w:"provide",p:"v.",z:"提供，作準備",e:"The company will provide transport for your business trip.",root:"vid"},
+{w:"provision",p:"n.",z:"提供，準備，補給；條款",e:"The efficient provision of public services is the government's responsibility.",root:"vid"},
+{w:"revise",p:"v.",z:"修訂",e:"The law is revised from time to time to keep it abreast of latest developments.",root:"vid"},
+{w:"visual",p:"a./n.",z:"視覺的；輔助說明",e:"You should add some visuals to your presentation, such as graphs and charts.",root:"vid"},
+{w:"vision",p:"n.",z:"視力，遠見，願景",e:"Leonardo da Vinci came up with several visionary schemes, including one for flying.",root:"vid"},
+{w:"view",p:"n./v.",z:"景觀，觀點；看待",e:"I view the recent setbacks as an opportunity for reform.",root:"vid"},
+{w:"vista",p:"n.",z:"街景，窗景，景象",e:"The WTO opened up new vistas of international cooperation.",root:"vid"},
+{w:"envisage",p:"v.",z:"想像",e:"Can you envisage life in the 22nd century?",root:"vid"},
+{w:"contact",p:"n./v./a.",z:"接觸（的）",e:"Contact sports have a higher rate of injury than normal.",root:"tach"},
+{w:"attach",p:"v.",z:"附上，黏附，依附",e:"You can find the pictures in the attachment to this email.",root:"tach"},
+{w:"detach",p:"v.",z:"拆開，分離，超脫",e:"The scholar is commenting on the riot as a detached observer.",root:"tach"},
+{w:"contagious",p:"a.",z:"傳染性的",e:"Tuberculosis is a contagious disease.",root:"tach"},
+{w:"contiguous",p:"a.",z:"有接觸的，相鄰的，連續的",e:"The traveler drove through all 48 contiguous states.",root:"tach"},
+{w:"contingency",p:"n.",z:"變故，可能發生的情況",e:"You must be able to deal with all possible contingencies.",root:"tach"},
+{w:"intact",p:"a.",z:"完好如初的，完整無缺的",e:"If you should stumble upon a crime scene, remember to keep everything intact.",root:"tach"},
+{w:"integrate",p:"v.",z:"整合，統合",e:"The teacher is trying to integrate the internet into the classroom.",root:"tach"},
+{w:"disintegrate",p:"v.",z:"瓦解，碎裂",e:"Under the pandemic, social order gradually disintegrated.",root:"tach"},
+{w:"integral",p:"a.",z:"不可或缺的",e:"A one-year internship is integral to the training of a physician.",root:"tach"},
+{w:"integrity",p:"n.",z:"完整性，正直，誠實",e:"The judge's integrity is beyond question; it's his knowledge that has aroused comment.",root:"tach"},
+{w:"intangible",p:"a.",z:"無形的，抽象的",e:"Money is the tangible reward for work, a sense of achievement the intangible reward.",root:"tach"},
+{w:"tactful",p:"a.",z:"圓滑的，老練的",e:"The question \"How old do you think I am?\" demands a tactful reply.",root:"tach"},
+{w:"tactile",p:"a.",z:"觸覺的",e:"Humans have a very fine tactile sense.",root:"tach"},
+{w:"tangle",p:"n./v.",z:"糾纏，混亂",e:"The shampoo promises to reduce tangles in your hair.",root:"tach"},
+{w:"sense",p:"n./v.",z:"意識，感覺",e:"An insect instinctively freezes when it senses danger.",root:"sens"},
+{w:"sensational",p:"a.",z:"引起轟動的，譁眾取寵的",e:"I dislike the sensational reporting of the tabloids.",root:"sens"},
+{w:"consensus",p:"n.",z:"共識",e:"The two parties reached consensus on the tax hike.",root:"sens"},
+{w:"assent",p:"n./v.",z:"同意",e:"After Congress gave its assent, the President declared war.",root:"sens"},
+{w:"dissent",p:"n./v.",z:"異議，不同意",e:"Political dissent in that country is not allowed.",root:"sens"},
+{w:"insensate",p:"a.",z:"無知覺的，不合理的",e:"I refuse to endorse that insensate plan.",root:"sens"},
+{w:"sentient",p:"a.",z:"有知覺的，有意識的",e:"Scientists believe that AI systems will eventually evolve into sentient beings.",root:"sens"},
+{w:"resent",p:"v.",z:"反感，厭惡",e:"I can accept the rejection, but I resent the implication that I am incompetent.",root:"sens"},
+{w:"sentry",p:"n.",z:"哨兵，站崗",e:"The soldier stood sentry from 1 a.m. to 3 a.m.",root:"sens"},
+{w:"sentimental",p:"a.",z:"感情的，濫情主義的",e:"This old watch has a lot of sentimental value for me.",root:"sens"},
+{w:"extrasensory",p:"a.",z:"超感官的",e:"Extrasensory perception is also called the sixth sense.",root:"sens"},
+{w:"impatient",p:"a.",z:"不耐煩的",e:"The people are all impatient for change.",root:"pass"},
+{w:"compassion",p:"n.",z:"同情",e:"The public showed genuine compassion for the victims and donated huge sums.",root:"pass"},
+{w:"empathy",p:"n.",z:"同理心",e:"Ex-President Clinton is famous for his empathy.",root:"pass"},
+{w:"impassioned",p:"a.",z:"熱情的",e:"The lecturer made an impassioned appeal for the earthquake victims.",root:"pass"},
+{w:"impassive",p:"a.",z:"喜怒不形於色的，無感情的",e:"The native American is said to have an impassive-looking face.",root:"pass"},
+{w:"incompatible",p:"a.",z:"不相容的，不合的",e:"The software is incompatible with your version of OS.",root:"pass"},
+{w:"passive",p:"a.",z:"被動的，消極的",e:"Sometimes passive resistance works better than active rebellion.",root:"pass"},
+{w:"pathetic",p:"a.",z:"可悲的",e:"The homeless man made a pathetic attempt at dressing respectably.",root:"pass"},
+{w:"pathogenic",p:"a.",z:"致病的",e:"In many countries, untreated drinking water may be pathogenic.",root:"pass"},
+{w:"psychopath",p:"n.",z:"精神病患者，喪心病狂",e:"The psychopath brought a gun to the school and started shooting indiscriminately.",root:"pass"},
+{w:"odor",p:"n.",z:"氣味，味道",e:"There is a musty odor in the damp cellar.",root:"od"},
+{w:"odious",p:"a.",z:"可憎的，可惡的",e:"The perpetrator of the odious crime was sentenced to death.",root:"od"},
+{w:"olfactory",p:"a.",z:"嗅覺的",e:"Dogs possess a highly developed olfactory sense.",root:"od"},
+{w:"redolent",p:"a.",z:"芬芳的，有...味道的",e:"My grandmother's house always seemed to be redolent with the aroma of baking bread.",root:"od"},
+{w:"detrimental",p:"a.",z:"有害的，不利的",e:"Smoking has a detrimental effect on health.",root:"trib"},
+{w:"attrition",p:"n.",z:"損耗，磨損",e:"Age entails the inevitable attrition of the edges of the teeth.",root:"trib"},
+{w:"contrite",p:"a.",z:"懺悔的，懊悔的",e:"The contrite prisoner was given parole.",root:"trib"},
+{w:"tribulation",p:"n.",z:"苦難，折磨",e:"The book deals with the trials and tribulations of starting a new business.",root:"trib"},
+{w:"trite",p:"a.",z:"老套的，陳腐的",e:"That argument has become trite.",root:"trib"},
+{w:"diaphanous",p:"a.",z:"透明的，看得穿的",e:"The bride wore a diaphanous veil.",root:"phan"},
+{w:"phenomenal",p:"a.",z:"驚人的",e:"The phenomenal success of the young company is truly amazing.",root:"phan"},
+{w:"phantom",p:"n./a.",z:"幽靈，魅影；幽靈般的，幻想的",e:"The company was a phantom organization set up to wash money.",root:"phan"},
+{w:"epiphany",p:"n.",z:"頓悟",e:"Archimedes had an epiphany while stepping into a full bathtub.",root:"phan"},
+{w:"prelude",p:"n.",z:"前奏曲，序幕",e:"An eruption of sectarian violence proved to be the prelude to all-out civil war.",root:"lud"},
+{w:"delude",p:"v.",z:"欺騙",e:"We deluded ourselves into thinking that the ice cream wouldn't affect our diet.",root:"lud"},
+{w:"disillusion",p:"v.",z:"使幻想破滅",e:"Working at that store for six months was enough to disillusion me about retail work.",root:"lud"},
+{w:"elusive",p:"a.",z:"難以捉摸的，難以掌握的",e:"The truth may prove elusive.",root:"lud"},
+{w:"allusion",p:"n.",z:"暗示，指射",e:"The bird's name is doubtless an allusion to its call.",root:"lud"},
+{w:"collude",p:"v.",z:"共謀，串通",e:"The two companies colluded to keep prices high.",root:"lud"},
+{w:"revive",p:"v.",z:"復活，振興",e:"The aborigine is trying to revive a lost handicraft.",root:"vit"},
+{w:"convivial",p:"a.",z:"歡樂的，宴飲的",e:"The party had a convivial atmosphere.",root:"vit"},
+{w:"viable",p:"a.",z:"可以存活的，可行的",e:"The plan is not economically viable.",root:"vit"},
+{w:"vivid",p:"a.",z:"鮮明的，生動的",e:"He gave a vivid description of his adventure in the wild.",root:"vit"},
+{w:"vital",p:"a.",z:"維持生命必需的，生氣勃勃的，極其重要的",e:"The patient just lost all vital signs.",root:"vit"},
+{w:"vitality",p:"n.",z:"生命力，活力",e:"The economy has lost vitality, so the government is studying ways to revitalize it.",root:"vit"},
+{w:"symbiosis",p:"n.",z:"共生關係",e:"Clownfish and sea anemones live in symbiosis.",root:"bio"},
+{w:"biotechnology",p:"n.",z:"生物科技",e:"Cloning and other forms of biotechnology have greatly increased agricultural productivity.",root:"bio"},
+{w:"bionic",p:"a.",z:"生物電子科技的",e:"The man can leave his wheelchair now because he has a bionic leg.",root:"bio"},
+{w:"biosphere",p:"n.",z:"生物圈",e:"The earth's biosphere extends from equatorial to polar regions.",root:"bio"},
+{w:"biopsy",p:"n.",z:"（活組織）切片檢查",e:"A tissue biopsy is required to diagnose the nature of the tumor.",root:"bio"},
+{w:"innate",p:"a.",z:"與生俱來的，固有的",e:"Humans have an innate desire for freedom.",root:"nat"},
+{w:"naive",p:"a.",z:"天真的，無知的",e:"Don't be so naive: there's no such thing as a free lunch.",root:"nat"},
+{w:"naturalize",p:"v.",z:"歸化，入籍",e:"T.S. Eliot became a naturalized British citizen in 1927.",root:"nat"},
+{w:"pregnant",p:"a.",z:"懷孕的",e:"Please yield priority seats to the elderly, the handicapped, and pregnant women.",root:"nat"},
+{w:"animated",p:"a.",z:"熱烈的，生動的",e:"An animated discussion is going on in the lecture hall.",root:"anim"},
+{w:"animosity",p:"n.",z:"敵意，憎恨",e:"We put aside our personal animosities to work together.",root:"anim"},
+{w:"inanimate",p:"a.",z:"無生命的",e:"The predator is focused on motion and automatically screens out inanimate objects.",root:"anim"},
+{w:"mortician",p:"n.",z:"殯葬業者",e:"A mortician works in a mortuary.",root:"mort"},
+{w:"immortal",p:"a./n.",z:"不朽的，不死的；神",e:"Shakespeare won immortal fame through the 36 plays he wrote.",root:"mort"},
+{w:"morbid",p:"a.",z:"病理的，病態的，恐怖的",e:"Ever since the accident, he has been suffering from a morbid fear of driving.",root:"mort"},
+{w:"mortify",p:"v.",z:"羞辱，抑制",e:"When I was about to pay, I was mortified to find that I didn't have my wallet.",root:"mort"},
+{w:"moribund",p:"a.",z:"垂死的，即將滅亡的",e:"The moribund patient needs a priest.",root:"mort"},
+{w:"mortgage",p:"n./v.",z:"抵押貸款",e:"The man mortgaged his house to fund his business.",root:"mort"},
+{w:"postmortem",p:"a./n.",z:"死後的，驗屍的；驗屍，事後檢討",e:"Party leaders are conducting a postmortem of the election to try to find out what went wrong.",root:"mort"},
+{w:"suicide",p:"n.",z:"自殺（者）",e:"The terminal patient committed suicide to end his pains.",root:"cide"},
+{w:"ecocide",p:"n.",z:"生態滅絕",e:"Nuclear warfare might cause widespread ecocide.",root:"cide"},
+{w:"genocide",p:"n.",z:"種族滅絕，大屠殺",e:"The Holocaust is the worst genocide in history.",root:"cide"},
+{w:"homicide",p:"n.",z:"殺人案，殺人犯",e:"The number of homicides rose after capital punishment was abolished.",root:"cide"},
+{w:"pesticide",p:"n.",z:"殺蟲劑，農藥",e:"No pesticide may be used in the cultivation of organic vegetables.",root:"cide"},
+{w:"aspiration",p:"n.",z:"志向，抱負，熱望",e:"I've never had any political aspirations.",root:"spir"},
+{w:"inspiring",p:"a.",z:"鼓舞人心的，啟發靈感的",e:"He was an inspiring example to his pupils.",root:"spir"},
+{w:"respiration",p:"n.",z:"呼吸",e:"The patient's respiration was shallow and labored.",root:"spir"},
+{w:"society",p:"n.",z:"社會，協會",e:"The US has a capitalist society.",root:"soci"},
+{w:"socialize",p:"v.",z:"交際應酬",e:"The PR officer is good at socializing with all sorts of people.",root:"soci"},
+{w:"antisocial",p:"a.",z:"孤僻的，反社會的",e:"Terrorists engage in such antisocial behavior as planting bombs and killing innocents.",root:"soci"},
+{w:"associate",p:"v./n./a.",z:"聯想；夥伴；副的",e:"Lung cancer is often associated with smoking.",root:"soci"},
+{w:"association",p:"n.",z:"聯想，協會",e:"The psychologist is using free association to treat his patient.",root:"soci"},
+{w:"dissociate",p:"v.",z:"分離，切割",e:"The gangster has turned a politician and is trying to dissociate himself from the past.",root:"soci"},
+{w:"sociopolitical",p:"a.",z:"社會政治的",e:"After drastic sociopolitical changes, the country was thoroughly modernized.",root:"soci"},
+{w:"aggregate",p:"n./v./a.",z:"一堆；聚集，總計；整體的",e:"The retreating glacier left behind an aggregate of rock and mineral fragments.",root:"greg"},
+{w:"egregious",p:"a.",z:"醒目的，過份的",e:"These egregious errors are simply inexcusable.",root:"greg"},
+{w:"gregarious",p:"a.",z:"群居的，社會性的，合群的",e:"Humans are gregarious animals.",root:"greg"},
+{w:"civilization",p:"n.",z:"文明",e:"Civilization comes from the growth of cities, whereas culture comes from agriculture, cultivation of the land.",root:"civi"},
+{w:"civic",p:"a.",z:"公民的，市民的",e:"It is your civic duty to serve as a juror when required.",root:"civi"},
+{w:"citadel",p:"n.",z:"城堡，要塞",e:"This university is a citadel of advanced learning.",root:"civi"},
+{w:"citizenship",p:"n.",z:"公民權，國籍",e:"The government official is attacked for holding joint citizenship.",root:"civi"},
+{w:"civilian",p:"a./n.",z:"平民（的）",e:"The civilian population refers to those over 15 but not in the armed forces.",root:"civi"},
+{w:"civil",p:"a.",z:"有禮的，公民的，民事的",e:"A government official is a civil servant.",root:"civi"},
+{w:"policy",p:"n.",z:"政策",e:"It is company policy to recycle waste paper and materials.",root:"polis"},
+{w:"politics",p:"n.",z:"政治",e:"You don't need to study politics to run for office.",root:"polis"},
+{w:"metropolis",p:"n.",z:"大都會",e:"Los Angeles is a modern metropolis.",root:"polis"},
+{w:"cosmopolitan",p:"a.",z:"世界性的，國際化的",e:"This city is increasingly cosmopolitan, with people from all over the world.",root:"polis"},
+{w:"polite",p:"a.",z:"禮貌的，客氣的",e:"The child is well-liked because he is always polite.",root:"polis"},
+{w:"politic",p:"a./v.",z:"精明的，於己有利的；競選，拉票",e:"It will not be politic for you to offend your supervisor.",root:"polis"},
+{w:"politician",p:"n.",z:"政客",e:"That man is a politician, but he is far from being a statesman.",root:"polis"},
+{w:"geopolitical",p:"a.",z:"地緣政治的，全球政治的",e:"Canada and the U.S. have long been friendly nations for cultural, historical, as well as geopolitical reasons.",root:"polis"},
+{w:"democracy",p:"n.",z:"民主",e:"People in a democracy have the right to vote.",root:"demo"},
+{w:"demographic",p:"a./n.",z:"人口統計學的；特定族群",e:"This magazine appeals specifically to a young urban demographic.",root:"demo"},
+{w:"endemic",p:"a.",z:"地方性的，某地特有的",e:"Dengue fever is endemic to tropical regions.",root:"demo"},
+{w:"pandemic",p:"a./n.",z:"全球流行的，世界性的；全球疫情",e:"The 1918 flu pandemic claimed millions of lives.",root:"demo"},
+{w:"conjure",p:"v.",z:"唸咒召喚，施魔法（變出）",e:"The opening lines conjure up a time long past and forgotten.",root:"jur"},
+{w:"justice",p:"n.",z:"正義，司法，法官",e:"In a Western, the job of a sheriff is to uphold justice.",root:"jur"},
+{w:"justify",p:"v.",z:"證明...有理，為...辯護",e:"Some believe that the end justifies the means.",root:"jur"},
+{w:"judicial",p:"a.",z:"司法的",e:"The judicial system is badly in need of reform.",root:"jur"},
+{w:"judicious",p:"a.",z:"明智的",e:"The judicious thing to do at this moment is to wait.",root:"jur"},
+{w:"prejudice",p:"n./v.",z:"成見；使產生成見",e:"Employment policies of this company do not allow any racial or sexual prejudice.",root:"jur"},
+{w:"injure",p:"v.",z:"弄傷，傷害到",e:"The carpenter injured his hand while working.",root:"jur"},
+{w:"jurisdiction",p:"n.",z:"司法管轄權",e:"The local court has no jurisdiction over this case.",root:"jur"},
+{w:"jury",p:"n.",z:"陪審團",e:"The jury has returned its verdict.",root:"jur"},
+{w:"jurist",p:"n.",z:"法學家",e:"Chief Justice Earl Warren was a famous jurist.",root:"jur"},
+{w:"legal",p:"a.",z:"法律的，合法的",e:"Most states in the US have legalized same-sex marriage.",root:"leg"},
+{w:"legislation",p:"n.",z:"立法，法律",e:"The state has passed legislation that makes it illegal to smoke in public places.",root:"leg"},
+{w:"legislature",p:"n.",z:"議會，立法機關",e:"The state legislature will meet tomorrow to discuss new legislation.",root:"leg"},
+{w:"legitimate",p:"a.",z:"合法的，合理的",e:"The military government is not legitimate because it obtained power through a coup.",root:"leg"},
+{w:"legacy",p:"n.",z:"遺產，留給後人的東西",e:"The Greeks left us a rich legacy of literature.",root:"leg"},
+{w:"privilege",p:"n.",z:"特權",e:"Healthcare should be a right, not a privilege.",root:"leg"},
+{w:"punishment",p:"n.",z:"懲罰",e:"Capital punishment does not seem to deter crime.",root:"pen"},
+{w:"penal",p:"a.",z:"刑罰的，當受刑罰的",e:"Bearing false witness is a penal offense.",root:"pen"},
+{w:"penalize",p:"v.",z:"處罰，對...不公",e:"The airline company was penalized for failing to meet safety requirements.",root:"pen"},
+{w:"impunity",p:"n.",z:"不受懲罰，不付出代價",e:"Humans cannot expect to go on polluting the environment with impunity.",root:"pen"},
+{w:"penitentiary",p:"n.",z:"監獄，感化院",e:"The criminal is now serving sentences in the state penitentiary.",root:"pen"},
+{w:"penitent",p:"a.",z:"懺悔的",e:"The criminal felt penitent and turned himself in.",root:"pen"},
+{w:"punitive",p:"a.",z:"懲罰性的",e:"The villagers are suing the polluting factory for punitive damages.",root:"pen"},
+{w:"repent",p:"v.",z:"悔改",e:"The man repented of his sins, and the priest absolved him.",root:"pen"},
+{w:"direct",p:"v./a.",z:"指導；直接的",e:"The movie was directed by Stephen Spielberg.",root:"rect"},
+{w:"rectangular",p:"a.",z:"長方形的，直角的",e:"There is a rectangular clearing in the woods.",root:"rect"},
+{w:"erect",p:"a./v.",z:"直立的，挺直的；豎立，建立",e:"Many buildings are being erected on the waterfront.",root:"rect"},
+{w:"incorrigible",p:"a.",z:"無可救藥",e:"\"You're incorrigible,\" said the woman to her boyfriend.",root:"rect"},
+{w:"rectify",p:"v.",z:"矯正，訂正",e:"It is not too late to rectify the unpopular policy.",root:"rect"},
+{w:"rectitude",p:"n.",z:"正直",e:"Our manager is a man of unquestionable moral rectitude.",root:"rect"},
+{w:"escort",p:"n./v.",z:"護衛，護送",e:"He escorted her to her car because it was late in the night.",root:"rect"},
+{w:"verify",p:"v.",z:"驗證，查證",e:"An editor must verify a story before printing it in the newspaper.",root:"ver"},
+{w:"veracious",p:"a.",z:"誠實的，真實可靠的",e:"The veracity of his story is indisputable.",root:"ver"},
+{w:"aver",p:"v.",z:"斷言，堅稱",e:"I aver that my friend is innocent.",root:"ver"},
+{w:"verdict",p:"n.",z:"（陪審團的）判決",e:"After the jury returned the verdict, the judge gave his sentence.",root:"ver"},
+{w:"verity",p:"n.",z:"真實性，真理",e:"The philosophy professor likes to talk about the eternal verities.",root:"ver"},
+{w:"commend",p:"v.",z:"稱讚；推薦",e:"His poetry is highly commended by other writers.",root:"mand"},
+{w:"demand",p:"n./v.",z:"需求，要求",e:"Prices are determined by supply and demand.",root:"mand"},
+{w:"mandate",p:"n./v.",z:"命令，授權",e:"At the forthcoming elections, the government will be seeking a fresh mandate from the people.",root:"mand"},
+{w:"mandatory",p:"a.",z:"強制的，義務性的",e:"Next year our manager will reach the mandatory retirement age.",root:"mand"},
+{w:"commandeer",p:"v.",z:"強行徵用",e:"The troops commandeered the city hall as headquarters.",root:"mand"},
+{w:"reprimand",p:"n./v.",z:"訓斥，斥責",e:"His boss gave him a severe reprimand for being late.",root:"mand"},
+{w:"adorn",p:"v.",z:"裝飾，美化",e:"Her paintings adorn the walls.",root:"ord"},
+{w:"inordinate",p:"a.",z:"無節制的，過度的",e:"The job had taken an inordinate amount of time.",root:"ord"},
+{w:"ordain",p:"v.",z:"任命（神職），規定，命令",e:"The process was ordained by law.",root:"ord"},
+{w:"subordinate",p:"a./n.",z:"附屬的；屬下",e:"The manager is merely adequate, but her subordinates are outstanding.",root:"ord"},
+{w:"ornate",p:"a.",z:"裝飾華麗的，（文字）過度複雜的",e:"Critics do not like the ornate style of the poet.",root:"ord"},
+{w:"coordinates",p:"n.",z:"座標",e:"You can locate any spot on a map with latitude and longitude coordinates.",root:"ord"},
+{w:"patronage",p:"n.",z:"贊助，資助，光顧",e:"The college relied on the patronage of its wealthy graduates to expand its funds.",root:"pater"},
+{w:"patronize",p:"v.",z:"光顧，照顧生意，屈尊俯就地對待",e:"Stop patronizing me — I understand the play as well as you do.",root:"pater"},
+{w:"repatriate",p:"v.",z:"遣送回國",e:"After the war, the prisoners were repatriated.",root:"pater"},
+{w:"perpetrate",p:"v.",z:"犯（罪），做（壞事）",e:"Many violent crimes are perpetrated by people under the influence of alcohol.",root:"pater"},
+{w:"generate",p:"v.",z:"生產",e:"The hydroelectric plant generates enough electricity for the whole city.",root:"gen"},
+{w:"degenerate",p:"v.",z:"衰退，變質；墮落的（人）",e:"The peaceful demonstration rapidly degenerated into violence.",root:"gen"},
+{w:"generation",p:"n.",z:"世代",e:"There is no generation gap between me and my daughter.",root:"gen"},
+{w:"generalization",p:"n.",z:"通則，概括，歸納",e:"Such a generalization about immigrants smacks of racial prejudice.",root:"gen"},
+{w:"gender",p:"n.",z:"性別",e:"The feminist movement is fighting for gender equality.",root:"gen"},
+{w:"engender",p:"v.",z:"引起，產生",e:"The tax hike has engendered protests.",root:"gen"},
+{w:"carcinogen",p:"n.",z:"致癌物",e:"Cigarettes contain several carcinogens.",root:"gen"},
+{w:"hallucinogenic",p:"a.",z:"會引起幻覺的",e:"Many psychedelics are hallucinogenic.",root:"gen"},
+{w:"congenital",p:"a.",z:"先天性的",e:"The child was born with congenital heart disease.",root:"gen"},
+{w:"genitals",p:"n.",z:"生殖器官（複數）",e:"Organisms of the same species have compatible genitals.",root:"gen"},
+{w:"genealogy",p:"n.",z:"世系，家譜",e:"I learned where we came from after I studied the genealogy of my family.",root:"gen"},
+{w:"genesis",p:"n.",z:"創始，肇始",e:"This book talks about the genesis of the Green Party.",root:"gen"},
+{w:"genetics",p:"n.",z:"遺傳學",e:"Genetics is primarily the study of genes.",root:"gen"},
+{w:"genre",p:"n.",z:"（文藝作品的）類型",e:"Mysteries and horrors are two different movie genres.",root:"gen"},
+{w:"homogeneous",p:"a.",z:"同質性高的，整齊的，均勻的",e:"This is a culturally homogenous neighborhood: almost all families are Asian Americans.",root:"gen"},
+{w:"indigenous",p:"a.",z:"土產的，原生種的，自製的",e:"This is a botanical garden of indigenous trees.",root:"gen"},
+{w:"miscegenation",p:"n.",z:"異族通婚",e:"Miscegenation often produces exceptionally vital offspring.",root:"gen"},
+{w:"genuine",p:"a.",z:"真正的，誠摯的",e:"He felt a deep and genuine affection toward her.",root:"gen"},
+{w:"ingenuous",p:"a.",z:"坦誠的，天真的",e:"It was rather ingenuous of him to ask a complete stranger to take care of his luggage.",root:"gen"},
+{w:"ingenious",p:"a.",z:"聰明的，巧妙的",e:"He came up with an ingenious solution to return the company to profitability.",root:"gen"},
+{w:"congenial",p:"a.",z:"友善的，合得來的",e:"We spent a relaxed evening with congenial friends.",root:"gen"},
+{w:"genome",p:"n.",z:"基因組",e:"The human genome has been successfully sequenced.",root:"gen"},
+{w:"germane",p:"a.",z:"有密切關係的",e:"The point he raised was germane to the issue under discussion.",root:"gen"},
+{w:"antigen",p:"n.",z:"抗原",e:"Immunization involves producing antibodies via implanting antigens into the body.",root:"gen"},
+{w:"eugenics",p:"n.",z:"優生學",e:"Eugenics has largely been rejected because of its association with racist and Nazi theories and actions.",root:"gen"},
+{w:"humble",p:"a.",z:"謙卑的，卑微的",e:"Abraham Lincoln came from humble origins.",root:"hum"},
+{w:"humiliate",p:"v.",z:"羞辱，侮辱",e:"The lady felt humiliated when she failed to receive an invitation to the big party.",root:"hum"},
+{w:"inhume",p:"v.",z:"埋葬入土",e:"No suicides can be inhumed in the churchyard.",root:"hum"},
+{w:"humid",p:"a.",z:"（氣候）潮濕的",e:"The island has a humid climate, with rains all year round.",root:"hum"},
+{w:"posthumous",p:"a.",z:"身後的",e:"The posthumous publication of the novel won the author undying fame.",root:"hum"},
+{w:"temperate",p:"a.",z:"溫和的，溫帶的",e:"The nation lies in the temperate zone.",root:"temp"},
+{w:"temporary",p:"a./n.",z:"暫時的；臨時僱員",e:"Stopping the leak with chewing gum is only a temporary measure.",root:"temp"},
+{w:"extemporaneous",p:"a.",z:"即興創作的",e:"The winner made an extemporaneous speech, in which he thanked a lot of people.",root:"temp"},
+{w:"tempo",p:"n.",z:"節奏，節拍",e:"Toward the end of the symphony, there was a change of tempo.",root:"temp"},
+{w:"temper",p:"n./v.",z:"脾氣，性情；鍛鍊，調和",e:"The old judge has learned to temper justice with mercy.",root:"temp"},
+{w:"tempestuous",p:"a.",z:"狂暴的，劇烈的",e:"After one final, tempestuous fight, the couple broke up.",root:"temp"},
+{w:"dependency",p:"n.",z:"依賴性",e:"We need to reduce our dependency on fossil fuels.",root:"pend"},
+{w:"expense",p:"n.",z:"開銷，支出",e:"Living expenses are high in major cities.",root:"pend"},
+{w:"appendix",p:"n.",z:"附錄，盲腸",e:"The sailor had his appendix removed before going out to sea.",root:"pend"},
+{w:"appendage",p:"n.",z:"附屬物，附加物，肢體",e:"The seahorse has several small leaf-like appendages.",root:"pend"},
+{w:"compensation",p:"n.",z:"補償，校正，報酬",e:"Victims of the pollution are negotiating with the factory for compensation.",root:"pend"},
+{w:"ponder",p:"v.",z:"衡量，思考",e:"The fresh graduate is pondering his future.",root:"pend"},
+{w:"imponderable",p:"a.",z:"無法衡量的",e:"You can only be awed facing the imponderable vastness of space.",root:"pend"},
+{w:"indispensable",p:"a.",z:"不可或缺的",e:"If you plan to camp in these mountains, warm clothing is absolutely indispensable.",root:"pend"},
+{w:"pending",p:"a./prep.",z:"懸而未決；等待...",e:"The project was put on hold, pending approval by the board.",root:"pend"},
+{w:"pendant",p:"n.",z:"墜子，吊飾",e:"She wore a necklace with a diamond pendant.",root:"pend"},
+{w:"pendulum",p:"n.",z:"鐘擺",e:"Fluctuations on the real estate market are simply swings of the pendulum.",root:"pend"},
+{w:"responsible",p:"a.",z:"負責的，要負責任",e:"Who should be responsible for the disaster?",root:"pend"},
+{w:"pensive",p:"a.",z:"沈思的，若有所思的",e:"The woman is in a pensive mood.",root:"pend"},
+{w:"ponderous",p:"a.",z:"笨重的，沈悶的",e:"He fell asleep during the ponderous lecture.",root:"pend"},
+{w:"suspense",p:"n.",z:"懸疑",e:"The reader is kept in suspense right up to the last page.",root:"pend"},
+{w:"suspend",p:"v.",z:"懸浮，懸吊，暫停，停職",e:"The cable car service has been suspended because of the thunderstorm.",root:"pend"},
+{w:"sponsor",p:"n./v.",z:"主辦者，贊助人；主辦，資助",e:"The show is sponsored by a tobacco company.",root:"pend"},
+{w:"spontaneous",p:"a.",z:"自動的，自發的",e:"The laughter was spontaneous and heart-felt.",root:"pend"},
+{w:"preponderance",p:"n.",z:"（數量）優勢，優越",e:"The preponderance of evidence suggests that the man is guilty.",root:"pend"},
+{w:"architecture",p:"n.",z:"建築",e:"The young man studied architecture in college.",root:"arch"},
+{w:"archrival",p:"n.",z:"頭號對手",e:"Pepsi is Coca Cola's archrival in the soft drink market.",root:"arch"},
+{w:"anarchy",p:"n.",z:"無政府主義，混亂",e:"After the revolution, France quickly slipped into a state of anarchy.",root:"arch"},
+{w:"archaeology",p:"n.",z:"考古學",e:"The man is an expert on the archaeology of ancient Egypt.",root:"arch"},
+{w:"archaic",p:"a.",z:"古老的，老式的",e:"\"Thou shalt love thy neighbour\" is an archaic way of saying \"You should love your neighbor.\"",root:"arch"},
+{w:"hierarchy",p:"n.",z:"階級制度",e:"The expression \"pecking order\" originally refers to the social hierarchy of birds.",root:"arch"},
+{w:"matriarch",p:"n.",z:"女家長，女統治者",e:"In a matriarchal society, the matriarch holds supreme power.",root:"arch"},
+{w:"patriarch",p:"n.",z:"男家長，男統治者",e:"My grandfather is the patriarch of an extended family.",root:"arch"},
+{w:"archive",p:"n.",z:"檔案館，資料庫",e:"Paying members can search for back issues of the magazine in the archive.",root:"arch"},
 /* --- Supplementary entries: confused-pair partners not in main list --- */
 {w:"callus",p:"n.",z:"繭，硬皮",e:"Pianists often develop a callus on their fingertips from years of practice.",c:"callous"},
 {w:"nature",p:"n.",z:"本性，天性；大自然",e:"Whether intelligence comes from nature or nurture is still debated.",c:"nurture"},
@@ -1387,7 +1875,7 @@ function loadSettings(){
   return Object.assign({},DEFAULT_SETTINGS);
 }
 function saveSettings(s){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(s))}catch(e){}}
-const DEFAULT_SETTINGS = {dailyTarget:20,speechRate:0.85,autoSpeak:1};
+const DEFAULT_SETTINGS = {dailyTarget:20,speechRate:0.85,autoSpeak:1,speechAccent:'en-US'};
 
 let store = loadStore();
 let settings = loadSettings();
@@ -1441,20 +1929,43 @@ function speak(text){
   if(!('speechSynthesis' in window))return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
+  const accent = settings.speechAccent || 'en-US';
+  u.lang = accent;
   u.rate = parseFloat(settings.speechRate)||0.85;
-  // Try to select a clear English voice
+  u.pitch = 1;
+  // Try to select the best available voice for the chosen accent
   const voices = window.speechSynthesis.getVoices();
-  const pref = voices.find(v=>/en-US/i.test(v.lang) && /samantha|google|natural/i.test(v.name)) ||
-               voices.find(v=>/en-US/i.test(v.lang)) ||
-               voices.find(v=>/en/i.test(v.lang));
+  const accentRe = new RegExp(accent.replace('-','\\-'),'i');
+  // Prefer Apple's high-quality voices, then Google, then any matching accent
+  const pref = voices.find(v=>accentRe.test(v.lang) && /samantha|alex|daniel|karen|moira/i.test(v.name)) ||
+               voices.find(v=>accentRe.test(v.lang) && /google/i.test(v.name)) ||
+               voices.find(v=>accentRe.test(v.lang) && /natural|premium|enhanced/i.test(v.name)) ||
+               voices.find(v=>accentRe.test(v.lang)) ||
+               voices.find(v=>/^en/i.test(v.lang));
   if(pref) u.voice = pref;
   window.speechSynthesis.speak(u);
 }
-// Force voices to load on some browsers
+// Force voices to load on some browsers (Chrome quirk)
 if('speechSynthesis' in window){
   window.speechSynthesis.onvoiceschanged = ()=>{};
   window.speechSynthesis.getVoices();
+}
+// Speak the example sentence (slower) — used by sentence-listening button
+function speakSentence(text){
+  if(!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = settings.speechAccent || 'en-US';
+  u.rate = (parseFloat(settings.speechRate)||0.85) * 0.95; // slightly slower for sentences
+  u.pitch = 1;
+  const voices = window.speechSynthesis.getVoices();
+  const accentRe = new RegExp((settings.speechAccent||'en-US').replace('-','\\-'),'i');
+  const pref = voices.find(v=>accentRe.test(v.lang) && /samantha|alex|daniel|karen|moira/i.test(v.name)) ||
+               voices.find(v=>accentRe.test(v.lang) && /google/i.test(v.name)) ||
+               voices.find(v=>accentRe.test(v.lang)) ||
+               voices.find(v=>/^en/i.test(v.lang));
+  if(pref) u.voice = pref;
+  window.speechSynthesis.speak(u);
 }
 
 /* ============================================================
@@ -1479,7 +1990,7 @@ function renderHome(){
     <header class="masthead">
       <div class="eyebrow">Post-TCM English Trainer</div>
       <h1 class="title">Vocabulary Practice<span class="cn">後中醫英文單字練習器</span></h1>
-      <div class="sub">針對閱讀醫學期刊、句子填空與字義辨析設計 · 共 ${VOCAB.length} 字（含 ${VOCAB.filter(v=>v.src).length} 字曾出現於中國醫/義守考古題）</div>
+      <div class="sub">針對閱讀醫學期刊、句子填空與字義辨析設計 · 共 ${VOCAB.length} 字 · ${VOCAB.filter(v=>v.src).length} 字曾出現於考古題 · ${VOCAB.filter(v=>v.root).length} 字按字根分類</div>
     </header>
 
     <div class="stats">
@@ -1521,6 +2032,12 @@ function renderHome(){
         <div class="t-en">Past Exam Vocabulary</div>
         <div class="d">只練習曾於中國醫（10 年）、義守醫（5 年）出現過的單字，共 ${VOCAB.filter(v=>v.src).length} 字。題型隨機混合句子填空與同義反義。</div>
       </button>
+      <button class="mode" onclick="showRootMenu()" style="grid-column:1/-1;background:linear-gradient(135deg,var(--paper),#dde6dc);border-color:var(--sage)">
+        <span class="num">MODE 06 · 字根</span>
+        <div class="t">字根字首 · 系統學習</div>
+        <div class="t-en">By Latin/Greek Roots</div>
+        <div class="d">按字根分組練習（fract、rupt、cand、bio、log、spect…等 50+ 字根）。同字根衍生字會一併出現，幫助掌握詞義邏輯，閱讀醫學期刊時能推測未見過的字。共 ${VOCAB.filter(v=>v.root).length} 字。</div>
+      </button>
     </div>
 
     <div class="sec-h">需要加強的字 <span class="right">Weak Words</span></div>
@@ -1528,7 +2045,7 @@ function renderHome(){
       ${weakWords.length ? weakWords.map(v=>{
         const s = store.wordStats[v.w];
         const r = Math.round(100*s.correct/s.seen);
-        return `<div class="weak-row"><span class="ww">${v.w}</span><span class="wzh">${v.z}</span><span class="wstat">${r}%</span></div>`;
+        return `<div class="weak-row"><span class="ww">${v.w}</span><button class="speak-btn-mini" onclick="event.stopPropagation();speak('${v.w.replace(/'/g,"\\'")}')" title="發音">▶</button><span class="wzh">${v.z}</span><span class="wstat">${r}%</span></div>`;
       }).join('') : `<div class="weak-empty">尚未累積足夠資料 · 開始練習後，答錯較多的字會列在這裡</div>`}
     </div>
 
@@ -1559,7 +2076,133 @@ function startMode(mode){
   else if(mode==='synant') buildSynAntSession();
   else if(mode==='confused') buildConfusedSession();
   else if(mode==='exam') buildExamSession();
+  else if(mode==='root_random') buildRootRandomSession();
   renderQuestion();
+}
+
+/* === Root-word menu and mode === */
+function showRootMenu(){
+  // Build a screen showing all roots with counts, user picks one
+  const rootCounts = {};
+  VOCAB.filter(v=>v.root).forEach(v=>{
+    rootCounts[v.root] = (rootCounts[v.root]||0) + 1;
+  });
+  // Sort by count desc, then alphabetical
+  const sorted = Object.entries(rootCounts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  const ROOT_GLOSS = {
+    "fract":"break","rupt":"break","struct":"build","bel":"war","flict":"strike","noc":"harm",
+    "cand":"white, fire","vict":"conquer","reg":"rule","dom":"house, lord","sanct":"sacred",
+    "graph":"write","scrib":"write","aud":"hear","dict":"speak","fab":"speak","ora":"mouth, speak",
+    "cant":"sing","locu":"word, speak","log":"word, study of","voc":"voice, call","clam":"shout",
+    "spect":"look","vid":"see","tach":"touch","sens":"feel","pass":"feel, suffer","od":"smell",
+    "trib":"rub","phan":"show","lud":"play","vit":"live, life","bio":"life","nat":"born",
+    "anim":"life, spirit","mort":"death","cide":"kill","spir":"breathe","soci":"join, group",
+    "greg":"group","civi":"city, government","polis":"city, government","demo":"people",
+    "jur":"right, law","leg":"law","pen":"pain, punish","rect":"straight, right","ver":"true",
+    "mand":"order","ord":"order","pater":"father","gen":"born, produce, kind","hum":"ground, low",
+    "temp":"time, season","pend":"hang, weigh","arch":"chief, ancient, rule"
+  };
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <header class="masthead">
+      <div class="eyebrow">Mode 06 · By Roots</div>
+      <h1 class="title">字根字首<span class="cn">挑選字根開始練習</span></h1>
+      <div class="sub">按相同字根分組練習，掌握詞義邏輯。共 ${sorted.length} 個字根 · ${VOCAB.filter(v=>v.root).length} 字</div>
+    </header>
+    <div class="root-grid">
+      ${sorted.map(([root,count])=>{
+        const gloss = ROOT_GLOSS[root] || '';
+        return `<button class="root-card" onclick="startRootSession('${root}')">
+          <div class="root-name">${root}-</div>
+          <div class="root-gloss">${gloss}</div>
+          <div class="root-count">${count} 字</div>
+        </button>`;
+      }).join('')}
+    </div>
+    <div class="actions" style="margin-top:24px">
+      <button class="btn ghost" onclick="renderHome()">← 返回首頁</button>
+      <button class="btn" onclick="startMode('root_random')">隨機字根練習 →</button>
+    </div>
+  `;
+}
+
+function startRootSession(root){
+  session = {mode:'root_specific', currentRoot:root, idx:0, total:settings.dailyTarget, correct:0, wrong:0, questions:[]};
+  buildRootSpecificSession(root);
+  renderQuestion();
+}
+
+function buildRootSpecificSession(root){
+  // Practice all words with this specific root
+  const rootWords = VOCAB.filter(v=>v.root===root);
+  // If fewer words than daily target, cap total
+  session.total = Math.min(session.total, rootWords.length);
+  const used = new Set();
+  for(let i=0;i<session.total;i++){
+    let v;
+    let tries=0;
+    do{
+      v = rootWords[Math.floor(Math.random()*rootWords.length)];
+      tries++;
+    }while(used.has(v.w) && tries<30);
+    used.add(v.w);
+    // Mix: 50% cloze, 50% meaning-pick
+    const r = Math.random();
+    if(r < 0.5 && v.e){
+      const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\w*\\b","i"),"___");
+      const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
+      // Distractors: prefer same-root words (they're confusingly close in meaning)
+      const sameRoot = rootWords.filter(x=>x.w!==v.w);
+      const distractors = [];
+      for(const sr of shuffle(sameRoot.slice())){
+        if(distractors.length>=2) break;
+        distractors.push(sr.w);
+      }
+      // Fill with random from VOCAB if not enough
+      while(distractors.length<3){
+        const cand = VOCAB[Math.floor(Math.random()*VOCAB.length)];
+        if(cand.w!==v.w && !distractors.includes(cand.w)) distractors.push(cand.w);
+      }
+      const opts = shuffle([v.w, ...distractors]);
+      session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+    } else {
+      const wrongVocab = shuffle(VOCAB.filter(x=>x.w!==v.w && x.z!==v.z)).slice(0,3);
+      const opts = shuffle([v.z, ...wrongVocab.map(x=>x.z)]);
+      session.questions.push({type:'meaning', target:v, opts, ans:v.z});
+    }
+  }
+}
+
+function buildRootRandomSession(){
+  // Mix words from all roots, but ensure same-root distractors
+  const rootWords = VOCAB.filter(v=>v.root);
+  const used = new Set();
+  for(let i=0;i<session.total;i++){
+    let v;
+    let tries=0;
+    do{
+      v = rootWords[Math.floor(Math.random()*rootWords.length)];
+      tries++;
+    }while(used.has(v.w) && tries<30);
+    used.add(v.w);
+    if(v.e && Math.random()<0.5){
+      const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\w*\\b","i"),"___");
+      const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
+      // Same-root distractors
+      const sameRoot = VOCAB.filter(x=>x.root===v.root && x.w!==v.w);
+      const distractors = shuffle(sameRoot.slice()).slice(0,2).map(x=>x.w);
+      while(distractors.length<3){
+        const cand = VOCAB[Math.floor(Math.random()*VOCAB.length)];
+        if(cand.w!==v.w && !distractors.includes(cand.w)) distractors.push(cand.w);
+      }
+      const opts = shuffle([v.w, ...distractors]);
+      session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+    } else {
+      const wrongVocab = shuffle(VOCAB.filter(x=>x.w!==v.w && x.z!==v.z)).slice(0,3);
+      const opts = shuffle([v.z, ...wrongVocab.map(x=>x.z)]);
+      session.questions.push({type:'meaning', target:v, opts, ans:v.z});
+    }
+  }
 }
 
 function buildExamSession(){
@@ -1810,17 +2453,20 @@ function answerMeaning(choice){
   let html = '';
   if(isCorrect){
     html += `<div class="fb-tag">正確 · Correct</div>`;
-    html += `<div><span class="ans-word">${q.target.w}</span> · <span class="ans-zh">${q.target.z}</span></div>`;
+    html += `<div><span class="ans-word">${q.target.w}</span> <button class="speak-btn-mini" onclick="speak('${q.target.w.replace(/'/g,"\\'")}')" title="再聽一次">▶</button> · <span class="ans-zh">${q.target.z}</span></div>`;
   } else {
     html += `<div class="fb-tag">再想想 · Review</div>`;
-    html += `<div><span class="ans-word">${q.target.w}</span> 的正解：<span class="ans-zh">${q.target.z}</span></div>`;
+    html += `<div><span class="ans-word">${q.target.w}</span> <button class="speak-btn-mini" onclick="speak('${q.target.w.replace(/'/g,"\\'")}')" title="聽發音">▶</button> 的正解：<span class="ans-zh">${q.target.z}</span></div>`;
   }
   if(q.target.e){
     const re = new RegExp("\\b("+escapeReg(q.target.w)+"\\w*)\\b","i");
-    html += `<div class="ex">${q.target.e.replace(re,"<u>$1</u>")}</div>`;
+    html += `<div class="ex">${q.target.e.replace(re,"<u>$1</u>")} <button class="speak-btn-mini" onclick="speakSentence(\`${q.target.e.replace(/`/g,"'")}\`)" title="聽整句">▶</button></div>`;
   }
   if(q.target.src){
     html += `<div class="src-tag">📋 曾出現於 ${q.target.src.split('/').join('、')}</div>`;
+  }
+  if(q.target.root){
+    html += `<div class="root-tag">🌱 字根：<em>${q.target.root}-</em></div>`;
   }
   fb.innerHTML = html;
   fb.classList.add('show', isCorrect?'ok':'ng');
@@ -1836,10 +2482,12 @@ function answerMeaning(choice){
 function renderClozeQ(q){
   const app = document.getElementById('app');
   const stem = q.stem.replace('___',`<span class="blank" id="blankSlot">______</span>`);
+  // Listen-only version: replace blank with "blank" so students can hear context without spoiler
+  const listenSentence = q.stem.replace('___', 'blank');
   app.innerHTML = `
     <div class="practice">
       ${renderPHead('句子填空 · Sentence Cloze')}
-      <div class="q-prompt">選出最適合填入空格的字</div>
+      <div class="q-prompt">選出最適合填入空格的字 <button class="speak-btn-mini" onclick="speakSentence(\`${listenSentence.replace(/`/g,"'").replace(/'/g,"\\'")}\`)" title="聽朗讀（空格處唸 blank）">▶ 聽句子</button></div>
       <div class="q-stem">${stem}</div>
       <div class="opts" id="optsBox">
         ${q.opts.map((o,i)=>`<button class="opt" data-w="${o}" onclick="answer('${o}')">
@@ -1858,10 +2506,11 @@ function renderClozeQ(q){
 function renderConfusedQ(q){
   const app = document.getElementById('app');
   const stem = q.stem.replace('___',`<span class="blank" id="blankSlot">______</span>`);
+  const listenSentence = q.stem.replace('___', 'blank');
   app.innerHTML = `
     <div class="practice">
       ${renderPHead('混淆字辨義 · Confused Pairs')}
-      <div class="q-prompt">下列哪個字最符合句意？</div>
+      <div class="q-prompt">下列哪個字最符合句意？ <button class="speak-btn-mini" onclick="speakSentence(\`${listenSentence.replace(/`/g,"'").replace(/'/g,"\\'")}\`)" title="聽朗讀">▶ 聽句子</button></div>
       <div class="q-stem">${stem}</div>
       <div class="opts" id="optsBox">
         ${q.opts.map((o,i)=>`<button class="opt" data-w="${o}" onclick="answer('${o}')">
@@ -1912,11 +2561,13 @@ function renderPassageQ(q){
   p.blanks.forEach(b=>{
     html = html.replace(`[[${b.idx}]]`,`<span class="blank" data-blank="${b.idx}" id="b${b.idx}">⟪${b.idx}⟫</span>`);
   });
+  // Build a "listen" version: replace [[N]] with "blank"
+  const listenText = p.text.replace(/\[\[\d+\]\]/g, 'blank');
   // Render each blank's options below
   app.innerHTML = `
     <div class="practice">
       ${renderPHead('段落填空 · Passage Cloze')}
-      <div class="q-prompt"><strong style="font-style:italic;font-family:var(--serif);font-size:16px">${p.title}</strong></div>
+      <div class="q-prompt"><strong style="font-style:italic;font-family:var(--serif);font-size:16px">${p.title}</strong> <button class="speak-btn-mini" onclick="speakSentence(\`${listenText.replace(/`/g,"'").replace(/'/g,"\\'")}\`)" title="聽全文（空格處唸 blank）">▶ 聽全文</button></div>
       <div class="q-stem passage" id="passageText">${html}</div>
       <div id="passageBlanks"></div>
       <div class="feedback" id="fb"></div>
@@ -1987,7 +2638,11 @@ function answerPassageBlank(choice, blankIdx){
   if(targetVocab) recordResult(b.ans, isCorrect);
   bumpToday(isCorrect);
   if(isCorrect) session.correct++; else session.wrong++;
-  setTimeout(()=>renderPassageBlanks(q, blankIdx+1), 700);
+  // Auto-speak the correct answer
+  if(parseInt(settings.autoSpeak)){
+    setTimeout(()=>speak(b.ans), 200);
+  }
+  setTimeout(()=>renderPassageBlanks(q, blankIdx+1), 900);
 }
 
 function finishPassage(q){
@@ -2002,7 +2657,8 @@ function finishPassage(q){
   wrap.innerHTML = `
     <div class="feedback ${correctCount===p.blanks.length?'ok':'ng'} show" style="display:block">
       <div class="fb-tag">${correctCount===p.blanks.length?'全對 ✓':'答對 '+correctCount+' / '+p.blanks.length}</div>
-      <div>各空格正解：${p.blanks.map(b=>`<span class="ans-word">${b.ans}</span>`).join('、')}</div>
+      <div style="line-height:2">各空格正解：${p.blanks.map(b=>`<span class="ans-word">${b.ans}</span><button class="speak-btn-mini" onclick="speak('${b.ans.replace(/'/g,"\\'")}')" title="聽發音">▶</button>`).join('　')}</div>
+      <div style="margin-top:10px"><button class="speak-btn-mini" onclick="speakSentence(\`${p.text.replace(/\[\[\d+\]\]/g, (m)=>{const idx=parseInt(m.match(/\d+/)[0]); const b=p.blanks.find(x=>x.idx===idx); return b?b.ans:'___';}).replace(/`/g,"'")}\`)" title="聽全文">▶</button> 聽全文朗讀</div>
     </div>
   `;
   document.getElementById('actions').classList.remove('hidden');
@@ -2039,19 +2695,24 @@ function answer(choice){
   let html = '';
   if(isCorrect){
     html += `<div class="fb-tag">正確 · Correct</div>`;
-    html += `<div><span class="ans-word">${q.ans}</span> · <span class="ans-zh">${ansVocab.z||''}</span></div>`;
+    html += `<div><span class="ans-word">${q.ans}</span> <button class="speak-btn-mini" onclick="speak('${q.ans.replace(/'/g,"\\'")}')" title="再聽一次">▶</button> · <span class="ans-zh">${ansVocab.z||''}</span></div>`;
   }else{
     html += `<div class="fb-tag">再想想 · Review</div>`;
-    html += `<div>正解：<span class="ans-word">${q.ans}</span> · <span class="ans-zh">${ansVocab.z||''}</span></div>`;
+    html += `<div>正解：<span class="ans-word">${q.ans}</span> <button class="speak-btn-mini" onclick="speak('${q.ans.replace(/'/g,"\\'")}')" title="聽發音">▶</button> · <span class="ans-zh">${ansVocab.z||''}</span></div>`;
   }
-  // Add example sentence with target highlighted
+  // Add example sentence with target highlighted + a sentence-speak button
   if(ansVocab && ansVocab.e){
     const re = new RegExp("\\b("+escapeReg(ansVocab.w)+"\\w*)\\b","i");
-    html += `<div class="ex">${ansVocab.e.replace(re,"<u>$1</u>")}</div>`;
+    const safeE = ansVocab.e.replace(/'/g,"\\'").replace(/"/g,"&quot;");
+    html += `<div class="ex">${ansVocab.e.replace(re,"<u>$1</u>")} <button class="speak-btn-mini" onclick="speakSentence(\`${ansVocab.e.replace(/`/g,"'")}\`)" title="聽整句">▶</button></div>`;
   }
   // Show exam source tag if applicable
   if(ansVocab && ansVocab.src){
     html += `<div class="src-tag">📋 曾出現於 ${ansVocab.src.split('/').join('、')}</div>`;
+  }
+  // Show root tag if applicable
+  if(ansVocab && ansVocab.root){
+    html += `<div class="root-tag">🌱 字根：<em>${ansVocab.root}-</em></div>`;
   }
   // For confused-mode, add the comparison note
   if(q.type==='confused' && q.key && CONFUSED_NOTES[q.key]){
@@ -2122,12 +2783,20 @@ function openSettings(){
   document.getElementById('setDaily').value = settings.dailyTarget;
   document.getElementById('setRate').value = settings.speechRate;
   document.getElementById('setAutoSpeak').value = settings.autoSpeak;
+  document.getElementById('setAccent').value = settings.speechAccent || 'en-US';
   document.getElementById('settingsModal').classList.add('show');
+}
+function testVoice(){
+  // Apply current selections temporarily so the test reflects what user just chose
+  settings.speechRate = parseFloat(document.getElementById('setRate').value)||0.85;
+  settings.speechAccent = document.getElementById('setAccent').value || 'en-US';
+  speak('infrastructure');
 }
 function closeSettings(){
   settings.dailyTarget = Math.min(100, Math.max(5, parseInt(document.getElementById('setDaily').value)||20));
   settings.speechRate = parseFloat(document.getElementById('setRate').value)||0.85;
   settings.autoSpeak = parseInt(document.getElementById('setAutoSpeak').value)||0;
+  settings.speechAccent = document.getElementById('setAccent').value || 'en-US';
   saveSettings(settings);
   document.getElementById('settingsModal').classList.remove('show');
   renderHome();
