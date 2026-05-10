@@ -3578,24 +3578,29 @@ function buildRootSpecificSession(root){
     used.add(v.w);
     // Mix: 50% cloze, 50% meaning-pick
     const r = Math.random();
+    let pushedCloze = false;
     if(r < 0.5 && v.e){
       const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\w*\\b","i"),"___");
       const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
-      // Distractors: prefer same-root words (they're confusingly close in meaning)
-      const sameRoot = rootWords.filter(x=>x.w!==v.w);
-      const distractors = [];
-      for(const sr of shuffle(sameRoot.slice())){
-        if(distractors.length>=2) break;
-        distractors.push(sr.w);
+      if(finalStem){
+        // Distractors: prefer same-root words (they're confusingly close in meaning)
+        const sameRoot = rootWords.filter(x=>x.w!==v.w);
+        const distractors = [];
+        for(const sr of shuffle(sameRoot.slice())){
+          if(distractors.length>=2) break;
+          distractors.push(sr.w);
+        }
+        // Fill with random from VOCAB if not enough
+        while(distractors.length<3){
+          const cand = VOCAB[Math.floor(Math.random()*VOCAB.length)];
+          if(cand.w!==v.w && !distractors.includes(cand.w)) distractors.push(cand.w);
+        }
+        const opts = shuffle([v.w, ...distractors]);
+        session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+        pushedCloze = true;
       }
-      // Fill with random from VOCAB if not enough
-      while(distractors.length<3){
-        const cand = VOCAB[Math.floor(Math.random()*VOCAB.length)];
-        if(cand.w!==v.w && !distractors.includes(cand.w)) distractors.push(cand.w);
-      }
-      const opts = shuffle([v.w, ...distractors]);
-      session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
-    } else {
+    }
+    if(!pushedCloze){
       const wrongVocab = shuffle(VOCAB.filter(x=>x.w!==v.w && x.z!==v.z)).slice(0,3);
       const opts = shuffle([v.z, ...wrongVocab.map(x=>x.z)]);
       session.questions.push({type:'meaning', target:v, opts, ans:v.z});
@@ -3615,19 +3620,24 @@ function buildRootRandomSession(){
       tries++;
     }while(used.has(v.w) && tries<30);
     used.add(v.w);
+    let pushedCloze = false;
     if(v.e && Math.random()<0.5){
       const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\w*\\b","i"),"___");
       const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
-      // Same-root distractors
-      const sameRoot = VOCAB.filter(x=>x.root===v.root && x.w!==v.w);
-      const distractors = shuffle(sameRoot.slice()).slice(0,2).map(x=>x.w);
-      while(distractors.length<3){
-        const cand = VOCAB[Math.floor(Math.random()*VOCAB.length)];
-        if(cand.w!==v.w && !distractors.includes(cand.w)) distractors.push(cand.w);
+      if(finalStem){
+        // Same-root distractors
+        const sameRoot = VOCAB.filter(x=>x.root===v.root && x.w!==v.w);
+        const distractors = shuffle(sameRoot.slice()).slice(0,2).map(x=>x.w);
+        while(distractors.length<3){
+          const cand = VOCAB[Math.floor(Math.random()*VOCAB.length)];
+          if(cand.w!==v.w && !distractors.includes(cand.w)) distractors.push(cand.w);
+        }
+        const opts = shuffle([v.w, ...distractors]);
+        session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+        pushedCloze = true;
       }
-      const opts = shuffle([v.w, ...distractors]);
-      session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
-    } else {
+    }
+    if(!pushedCloze){
       const wrongVocab = shuffle(VOCAB.filter(x=>x.w!==v.w && x.z!==v.z)).slice(0,3);
       const opts = shuffle([v.z, ...wrongVocab.map(x=>x.z)]);
       session.questions.push({type:'meaning', target:v, opts, ans:v.z});
@@ -3649,14 +3659,19 @@ function buildExamSession(){
     used.add(v.w);
     // Mix question types: 60% cloze, 40% synonym/antonym/meaning-pick
     const r = Math.random();
+    let pushedCloze = false;
     if(r < 0.6 && v.e){
       // Cloze
       const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\w*\\b","i"),"___");
       const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
-      const distractors = pickDistractorsForWord(v, 3);
-      const opts = shuffle([v.w, ...distractors]);
-      session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
-    } else {
+      if(finalStem){
+        const distractors = pickDistractorsForWord(v, 3);
+        const opts = shuffle([v.w, ...distractors]);
+        session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
+        pushedCloze = true;
+      }
+    }
+    if(!pushedCloze){
       // Meaning pick: show word, choose correct Chinese meaning
       const wrongVocab = shuffle(VOCAB.filter(x=>x.w!==v.w && x.z!==v.z)).slice(0,3);
       const opts = shuffle([v.z, ...wrongVocab.map(x=>x.z)]);
@@ -3693,16 +3708,24 @@ function buildClozeSession(){
   for(let i=0;i<session.total;i++){
     let v;
     let tries=0;
-    do{ v = pickWeightedDueWord(); tries++; }while(used.has(v.w) && tries<30);
+    let finalStem = null;
+    do{
+      v = pickWeightedDueWord();
+      tries++;
+      if(used.has(v.w) || !v.e){ finalStem = null; continue; }
+      // Build question: sentence with the word blanked
+      const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\b","i"),"___");
+      // If the exact word doesn't appear, try common inflections
+      finalStem = stem === v.e ? maskInflection(v.e, v.w) : stem;
+    }while((!finalStem || used.has(v.w)) && tries<60);
+    if(!finalStem) continue; // give up on this slot to avoid producing a broken question
     used.add(v.w);
-    // Build question: sentence with the word blanked
-    const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\b","i"),"___");
-    // If the exact word doesn't appear, try common inflections
-    const finalStem = stem === v.e ? maskInflection(v.e, v.w) : stem;
     const distractors = pickDistractorsForWord(v, 3);
     const opts = shuffle([v.w, ...distractors]);
     session.questions.push({type:'cloze', target:v, stem:finalStem, opts, ans:v.w});
   }
+  // Adjust total if we couldn't fill every slot due to insufficient usable example sentences
+  if(session.questions.length < session.total) session.total = session.questions.length;
 }
 
 function escapeReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
@@ -3710,6 +3733,8 @@ function escapeReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 // If example uses an inflected form (e.g., "abided" for "abide"),
 // mask the longest matching variant.
 function maskInflection(text, base){
+  // Guard against missing/garbage data (empty strings, lone backslashes, too-short fragments).
+  if(!text || typeof text !== 'string' || text.replace(/[^a-zA-Z]/g,'').length < 5) return null;
   // Irregular verb forms - manually handle common ones
   const IRREGULAR = {
     "slay":["slain","slew","slaying"],
@@ -3724,13 +3749,26 @@ function maskInflection(text, base){
   const variants = [base, base+'s', base+'es', base+'ed', base+'d', base+'ing',
                     base.replace(/e$/,'')+'ing', base.replace(/y$/,'ies'),
                     base.replace(/y$/,'ied')];
+  // Consonant-doubling for short CVC verbs: ban->banned/banning, swap->swapped/swapping, trim->trimmed/trimming
+  if(base.length>=3 && base.length<=5){
+    const last = base.slice(-1).toLowerCase();
+    const second = base.slice(-2,-1).toLowerCase();
+    const third = base.slice(-3,-2).toLowerCase();
+    const isCons = c => /[bcdfghjklmnpqrstvz]/.test(c);
+    const isVowel = c => /[aeiou]/.test(c);
+    if(isCons(third) && isVowel(second) && isCons(last) && !"wxy".includes(last)){
+      variants.push(base+last+'ed', base+last+'ing');
+    }
+  }
   if(IRREGULAR[base]) variants.push(...IRREGULAR[base]);
   variants.sort((a,b)=>b.length-a.length);
   for(const v of variants){
     const re = new RegExp("\\b"+escapeReg(v)+"\\b","i");
     if(re.test(text)) return text.replace(re, "___");
   }
-  return text + " (___)";
+  // Couldn't find the base word in the example sentence; signal failure so caller can skip this question
+  // instead of producing an awkward "sentence (___)" with the blank dangling at the end.
+  return null;
 }
 
 function pickDistractorsForWord(target, n){
@@ -3806,12 +3844,15 @@ function buildConfusedSession(){
     if(va) expanded.push({target:va, partner:vb||{w:b,z:'',e:''}, key:k});
     if(vb) expanded.push({target:vb, partner:va||{w:a,z:'',e:''}, key:k});
   });
-  const picked = shuffle(expanded).slice(0, session.total);
-  session.total = picked.length;
-  picked.forEach(item=>{
+  const shuffled = shuffle(expanded);
+  const desired = session.total;
+  for(const item of shuffled){
+    if(session.questions.length >= desired) break;
     const v = item.target;
+    if(!v.e) continue;
     const stem = v.e.replace(new RegExp("\\b"+escapeReg(v.w)+"\\b","i"),"___");
     const finalStem = stem===v.e ? maskInflection(v.e, v.w) : stem;
+    if(!finalStem) continue; // skip pairs whose example sentence can't be masked cleanly
     // Options: target word, partner word, plus 2 distractors
     const partnerW = item.partner.w;
     const extras = pickDistractorsForWord(v, 2).filter(x=>x!==partnerW).slice(0,2);
@@ -3821,7 +3862,8 @@ function buildConfusedSession(){
     }
     const opts = shuffle([v.w, partnerW, ...extras]);
     session.questions.push({type:'confused', target:v, stem:finalStem, opts, ans:v.w, key:item.key, partner:item.partner});
-  });
+  }
+  session.total = session.questions.length;
 }
 
 function shuffle(arr){
@@ -4121,7 +4163,12 @@ function answer(choice){
   // Build feedback
   const fb = document.getElementById('fb');
   const target = q.target;
-  const ansVocab = VOCAB.find(v=>v.w===q.ans) || target;
+  // Find definition for the answer word: first in main VOCAB, then in target.d (derivatives/related words).
+  // Do NOT fall back to `target`, because target is a different word and using its Chinese definition
+  // would be misleading (e.g. for foresight->hindsight, target.z is "遠見，先見之明" which is foresight's meaning, not hindsight's).
+  let ansVocab = VOCAB.find(v=>v.w===q.ans);
+  if(!ansVocab && target.d) ansVocab = target.d.find(d=>d.w===q.ans);
+  if(!ansVocab) ansVocab = {w: q.ans, e: target.e};
   let html = '';
   if(isCorrect){
     html += `<div class="fb-tag">正確 · Correct</div>`;
@@ -4150,9 +4197,9 @@ function answer(choice){
   }
   // For synant, briefly explain
   if(q.type==='synant'){
-    const partnerVocab = VOCAB.find(v=>v.w===q.ans);
-    if(partnerVocab && partnerVocab.z){
-      html += `<div class="conf-note">${q.mode==='syn'?'同義字':'反義字'} <span class="ans-word">${q.ans}</span> 意為 ${partnerVocab.z}</div>`;
+    // Reuse ansVocab (already looked up in VOCAB and target.d)
+    if(ansVocab && ansVocab.z){
+      html += `<div class="conf-note">${q.mode==='syn'?'同義字':'反義字'} <span class="ans-word">${q.ans}</span> 意為 ${ansVocab.z}</div>`;
     }
   }
   fb.innerHTML = html;
