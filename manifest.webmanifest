@@ -1,0 +1,20 @@
+{
+  "name": "後中醫英文單字練習器",
+  "short_name": "後醫英文",
+  "description": "後中醫入學考英文字彙練習工具 — 句子填空、段落填空、同義反義、混淆字、考古題、字根練習。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6efe2",
+  "theme_color": "#a86b2a",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
